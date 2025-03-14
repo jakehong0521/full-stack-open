@@ -1,11 +1,15 @@
 type TotalProps = {
-  numExerciseArr: number[];
+  contents: {
+    name: string;
+    exercises: number;
+  }[];
 };
 
-const Total = ({ numExerciseArr }: TotalProps) => {
+const Total = ({ contents }: TotalProps) => {
   return (
     <p>
-      Number of exercises {numExerciseArr.reduce((acc, cur) => acc + cur, 0)}
+      Number of exercises{" "}
+      {contents.reduce((acc, cur) => acc + cur.exercises, 0)}
     </p>
   );
 };

@@ -1,12 +1,12 @@
 type PartProps = {
   name: string;
-  numExercise: number;
+  exercises: number;
 };
 
-const Part = ({ name, numExercise }: PartProps) => {
+const Part = ({ name, exercises }: PartProps) => {
   return (
     <p>
-      {name} {numExercise}
+      {name} {exercises}
     </p>
   );
 };
