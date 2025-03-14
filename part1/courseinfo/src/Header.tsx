@@ -1,9 +1,9 @@
 type HeaderProps = {
-  course: string;
+  text: string;
 };
 
-const Header = ({ course }: HeaderProps) => {
-  return <h1>{course}</h1>;
+const Header = ({ text }: HeaderProps) => {
+  return <h1>{text}</h1>;
 };
 
 export default Header;
