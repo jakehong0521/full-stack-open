@@ -31,12 +31,19 @@ const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
   return (
     <>
       <h1>statistics</h1>
-      <div>good {good}</div>
-      <div>neutral {neutral}</div>
-      <div>bad {bad}</div>
-      <div>all {good + neutral + bad}</div>
-      <div>average {(good - bad) / all}</div>
-      <div>positive {(good / all) * 100}%</div>
+
+      {all === 0 && <div>No feedback given</div>}
+
+      {all !== 0 && (
+        <>
+          <div>good {good}</div>
+          <div>neutral {neutral}</div>
+          <div>bad {bad}</div>
+          <div>all {good + neutral + bad}</div>
+          <div>average {(good - bad) / all}</div>
+          <div>positive {(good / all) * 100}%</div>
+        </>
+      )}
     </>
   );
 };
