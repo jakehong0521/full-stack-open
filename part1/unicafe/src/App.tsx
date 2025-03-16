@@ -5,7 +5,6 @@ const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-  const all = good + neutral + bad;
 
   return (
     <div>
@@ -15,6 +14,22 @@ const App = () => {
         <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
         <button onClick={() => setBad(bad + 1)}>bad</button>
       </div>
+      <Statistics bad={bad} good={good} neutral={neutral} />
+    </div>
+  );
+};
+
+type StatisticsProps = {
+  good: number;
+  neutral: number;
+  bad: number;
+};
+
+const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
+  const all = good + neutral + bad;
+
+  return (
+    <>
       <h1>statistics</h1>
       <div>good {good}</div>
       <div>neutral {neutral}</div>
@@ -22,7 +37,7 @@ const App = () => {
       <div>all {good + neutral + bad}</div>
       <div>average {(good - bad) / all}</div>
       <div>positive {(good / all) * 100}%</div>
-    </div>
+    </>
   );
 };
 
