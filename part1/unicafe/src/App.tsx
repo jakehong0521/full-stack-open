@@ -44,14 +44,20 @@ const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
       {all === 0 && <div>No feedback given</div>}
 
       {all !== 0 && (
-        <>
-          <StatisticLine text="good" value={good} />
-          <StatisticLine text="neutral" value={neutral} />
-          <StatisticLine text="bad" value={bad} />
-          <div>all {good + neutral + bad}</div>
-          <div>average {(good - bad) / all}</div>
-          <div>positive {(good / all) * 100}%</div>
-        </>
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={good} />
+            <StatisticLine text="neutral" value={neutral} />
+            <StatisticLine text="bad" value={bad} />
+            <StatisticLine text="all" value={all} />
+            <StatisticLine text="average" value={(good - bad) / all} />
+            <StatisticLine
+              text="positive"
+              value={(good / all) * 100}
+              unit="%"
+            />
+          </tbody>
+        </table>
       )}
     </>
   );
@@ -60,12 +66,15 @@ const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
 type StatisticLineProps = {
   text: string;
   value: number;
+  unit?: string;
 };
 
-const StatisticLine = ({ text, value }: StatisticLineProps) => (
-  <div>
-    {text} {value}
-  </div>
+const StatisticLine = ({ text, value, unit }: StatisticLineProps) => (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+    <td>{unit}</td>
+  </tr>
 );
 
 export default App;
