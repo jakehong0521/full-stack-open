@@ -10,14 +10,23 @@ const App = () => {
     <div>
       <h1>give feedback</h1>
       <div>
-        <button onClick={() => setGood(good + 1)}>good</button>
-        <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-        <button onClick={() => setBad(bad + 1)}>bad</button>
+        <Button text={"good"} onClick={() => setGood(good + 1)} />
+        <Button text={"neutral"} onClick={() => setNeutral(neutral + 1)} />
+        <Button text={"bad"} onClick={() => setBad(bad + 1)} />
       </div>
       <Statistics bad={bad} good={good} neutral={neutral} />
     </div>
   );
 };
+
+type ButtonProps = {
+  onClick: () => void;
+  text: string;
+};
+
+const Button = ({ onClick, text }: ButtonProps) => (
+  <button onClick={onClick}>{text}</button>
+);
 
 type StatisticsProps = {
   good: number;
@@ -36,9 +45,9 @@ const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
 
       {all !== 0 && (
         <>
-          <div>good {good}</div>
-          <div>neutral {neutral}</div>
-          <div>bad {bad}</div>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
           <div>all {good + neutral + bad}</div>
           <div>average {(good - bad) / all}</div>
           <div>positive {(good / all) * 100}%</div>
@@ -47,5 +56,16 @@ const Statistics = ({ good, neutral, bad }: StatisticsProps) => {
     </>
   );
 };
+
+type StatisticLineProps = {
+  text: string;
+  value: number;
+};
+
+const StatisticLine = ({ text, value }: StatisticLineProps) => (
+  <div>
+    {text} {value}
+  </div>
+);
 
 export default App;
