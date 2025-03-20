@@ -13,6 +13,10 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState<Record<number, number>>({});
+
+  const vote = (index: number) => () =>
+    setVotes({ ...votes, [index]: (votes[index] || 0) + 1 });
 
   const selectRandomAnecdote = () =>
     setSelected(Math.floor(Math.random() * anecdotes.length));
@@ -20,7 +24,9 @@ const App = () => {
   return (
     <>
       <div>{anecdotes[selected]}</div>
-      <button onClick={selectRandomAnecdote}>next anecdote</button>
+      <div>has {votes[selected] || 0} votes</div>
+      <button onClick={vote(selected)}>vote</button>
+      <button onClick={selectRandomAnecdote}>{selected} next anecdote</button>
     </>
   );
 };
