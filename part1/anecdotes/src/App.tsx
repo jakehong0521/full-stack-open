@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 const App = () => {
   const anecdotes = [
@@ -21,12 +21,23 @@ const App = () => {
   const selectRandomAnecdote = () =>
     setSelected(Math.floor(Math.random() * anecdotes.length));
 
+  const mostVotedIdx = useMemo(() => {
+    const maxVotes = Math.max(...Object.values(votes));
+    return parseInt(
+      Object.entries(votes).find(([_, votes]) => votes === maxVotes)?.[0] || "0"
+    );
+  }, [votes]);
+
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {votes[selected] || 0} votes</div>
       <button onClick={vote(selected)}>vote</button>
       <button onClick={selectRandomAnecdote}>{selected} next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <div>{anecdotes[mostVotedIdx]}</div>
+      <div>has {votes[mostVotedIdx || 0] || 0} votes</div>
     </>
   );
 };
