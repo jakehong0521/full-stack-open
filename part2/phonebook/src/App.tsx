@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
@@ -8,10 +8,18 @@ const App = () => {
     setNewName(event.target.value);
   };
 
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`);
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div>
           name:{" "}
           <input onChange={handleNameChange} type="text" value={newName} />
