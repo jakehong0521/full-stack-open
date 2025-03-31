@@ -10,14 +10,12 @@ type CourseProps = {
   };
 };
 
-const Course = ({ course }: CourseProps) => {
-  return (
-    <>
-      <Header text={course.name} />
-      <Content contents={course.parts} />
-      <Total contents={course.parts} />
-    </>
-  );
-};
+const Course = ({ course }: CourseProps) => (
+  <>
+    <Header text={course.name} />
+    <Content contents={course.parts} />
+    <Total contents={course.parts} />
+  </>
+);
 
 export default Course;
