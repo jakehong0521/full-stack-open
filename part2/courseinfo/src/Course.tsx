@@ -4,8 +4,9 @@ import Total from "./Total";
 
 type CourseProps = {
   course: {
+    id: number;
     name: string;
-    parts: { name: string; exercises: number }[];
+    parts: { exercises: number; id: number; name: string }[];
   };
 };
 
