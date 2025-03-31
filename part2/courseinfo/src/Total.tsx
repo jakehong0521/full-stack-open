@@ -8,8 +8,10 @@ type TotalProps = {
 const Total = ({ contents }: TotalProps) => {
   return (
     <p>
-      Number of exercises{" "}
-      {contents.reduce((acc, cur) => acc + cur.exercises, 0)}
+      <strong>
+        total of {contents.reduce((acc, cur) => acc + cur.exercises, 0)}{" "}
+        exercises
+      </strong>
     </p>
   );
 };
