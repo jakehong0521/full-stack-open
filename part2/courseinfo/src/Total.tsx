@@ -6,12 +6,10 @@ type TotalProps = {
 };
 
 const Total = ({ contents }: TotalProps) => {
+  const total = contents.reduce((acc, cur) => acc + cur.exercises, 0);
   return (
     <p>
-      <strong>
-        total of {contents.reduce((acc, cur) => acc + cur.exercises, 0)}{" "}
-        exercises
-      </strong>
+      <strong>total of {total} exercises</strong>
     </p>
   );
 };
