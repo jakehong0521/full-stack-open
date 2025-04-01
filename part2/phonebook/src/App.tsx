@@ -1,4 +1,6 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+
+import axios from "axios";
 
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
@@ -8,12 +10,13 @@ const App = () => {
   const [filteredSubstr, setFilteredSubstr] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newNumber, setNewNumber] = useState<string>("");
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456", id: 1 },
-    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
-    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
-    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
-  ]);
+  const [persons, setPersons] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => setPersons(response.data));
+  }, []);
 
   const handleFilteredSubstrChange = (
     event: React.ChangeEvent<HTMLInputElement>
