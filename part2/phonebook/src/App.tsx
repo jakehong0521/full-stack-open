@@ -5,18 +5,13 @@ import axios from "axios";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import { Person } from "./types";
 
 const App = () => {
   const [filteredSubstr, setFilteredSubstr] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newNumber, setNewNumber] = useState<string>("");
-  const [persons, setPersons] = useState<
-    {
-      id: string;
-      name: string;
-      number: string;
-    }[]
-  >([]);
+  const [persons, setPersons] = useState<Person[]>([]);
 
   useEffect(() => {
     axios

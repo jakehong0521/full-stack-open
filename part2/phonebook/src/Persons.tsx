@@ -1,9 +1,7 @@
+import { Person } from "./types";
+
 type PersonsProps = {
-  persons: {
-    id: string;
-    name: string;
-    number: string;
-  }[];
+  persons: Person[];
 };
 
 const Persons = ({ persons }: PersonsProps) => {
