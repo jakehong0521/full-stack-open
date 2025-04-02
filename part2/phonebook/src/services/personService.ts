@@ -13,8 +13,14 @@ const createPerson = async (person: Omit<Person, "id">): Promise<Person> =>
 const deletePerson = async (id: string): Promise<void> =>
   axios.delete(`${BASE_URL}/persons/${id}`);
 
+const updatePerson = async (person: Person): Promise<Person> =>
+  axios
+    .patch(`${BASE_URL}/persons/${person.id}`, person)
+    .then((response) => response.data);
+
 export default {
   createPerson,
   deletePerson,
   getPersons,
+  updatePerson,
 };

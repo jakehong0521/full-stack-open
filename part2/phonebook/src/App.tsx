@@ -43,8 +43,18 @@ const App = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const existingPerson = persons.find((person) => person.name === newName);
+
+    if (existingPerson) {
+      personService
+        .updatePerson({ ...existingPerson, number: newNumber })
+        .then((updatedPerson) =>
+          setPersons((prevPersons) =>
+            prevPersons.map((person) =>
+              person.id === updatedPerson.id ? updatedPerson : person
+            )
+          )
+        );
     } else {
       personService
         .createPerson({
