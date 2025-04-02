@@ -1,11 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 
+import ErrorMessage from "./ErrorMessage";
 import Filter from "./Filter";
+import NoticeMessage from "./NoticeMessage";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import personService from "./services/personService";
 import { Person } from "./types";
-import NoticeMessage from "./NoticeMessage";
 
 const App = () => {
   const [filteredSubstr, setFilteredSubstr] = useState<string>("");
@@ -13,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState<string>("");
   const [persons, setPersons] = useState<Person[]>([]);
   const [noticeMessage, setNoticeMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     personService.getPersons().then(setPersons);
@@ -20,11 +22,22 @@ const App = () => {
 
   const handleDeletePerson = (person: Person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
-      personService.deletePerson(person.id).then(() => {
-        setPersons((prevPersons) =>
-          prevPersons.filter((currPerson) => currPerson.id !== person.id)
-        );
-      });
+      personService
+        .deletePerson(person.id)
+        .then(() => {
+          setPersons((prevPersons) =>
+            prevPersons.filter((currPerson) => currPerson.id !== person.id)
+          );
+        })
+        .catch(() => {
+          setErrorMessage(
+            `Information of ${person.name} has already been removed from server`
+          );
+          setTimeout(() => setErrorMessage(""), 2000);
+          setPersons((prevPersons) =>
+            prevPersons.filter((currPerson) => currPerson.id !== person.id)
+          );
+        });
     }
   };
 
@@ -58,6 +71,15 @@ const App = () => {
           );
           setNoticeMessage(`Updated the phone number of ${updatedPerson.name}`);
           setTimeout(() => setNoticeMessage(""), 2000);
+        })
+        .catch(() => {
+          setErrorMessage(
+            `Information of ${existingPerson.name} has already been removed from server`
+          );
+          setTimeout(() => setErrorMessage(""), 2000);
+          setPersons((prevPersons) =>
+            prevPersons.filter((person) => person.id !== existingPerson.id)
+          );
         });
     } else {
       personService
@@ -85,6 +107,7 @@ const App = () => {
       <h2>Phonebook</h2>
 
       <NoticeMessage message={noticeMessage} />
+      <ErrorMessage message={errorMessage} />
 
       <Filter onChange={handleFilteredSubstrChange} value={filteredSubstr} />
 
