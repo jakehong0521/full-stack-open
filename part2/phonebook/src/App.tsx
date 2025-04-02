@@ -1,10 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 
-import axios from "axios";
-
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import personService from "./services/personService";
 import { Person } from "./types";
 
 const App = () => {
@@ -14,9 +13,7 @@ const App = () => {
   const [persons, setPersons] = useState<Person[]>([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => setPersons(response.data));
+    personService.getPersons().then(setPersons);
   }, []);
 
   const handleFilteredSubstrChange = (
@@ -39,13 +36,13 @@ const App = () => {
     if (persons.some((person) => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
     } else {
-      axios
-        .post("http://localhost:3001/persons", {
+      personService
+        .createPerson({
           name: newName,
           number: newNumber,
         })
-        .then((response) => {
-          setPersons(persons.concat(response.data));
+        .then((createdPerson) => {
+          setPersons(persons.concat(createdPerson));
           setNewName("");
           setNewNumber("");
         })
