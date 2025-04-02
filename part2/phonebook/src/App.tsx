@@ -5,12 +5,14 @@ import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import personService from "./services/personService";
 import { Person } from "./types";
+import NoticeMessage from "./NoticeMessage";
 
 const App = () => {
   const [filteredSubstr, setFilteredSubstr] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newNumber, setNewNumber] = useState<string>("");
   const [persons, setPersons] = useState<Person[]>([]);
+  const [noticeMessage, setNoticeMessage] = useState<string>("");
 
   useEffect(() => {
     personService.getPersons().then(setPersons);
@@ -48,13 +50,15 @@ const App = () => {
     if (existingPerson) {
       personService
         .updatePerson({ ...existingPerson, number: newNumber })
-        .then((updatedPerson) =>
+        .then((updatedPerson) => {
           setPersons((prevPersons) =>
             prevPersons.map((person) =>
               person.id === updatedPerson.id ? updatedPerson : person
             )
-          )
-        );
+          );
+          setNoticeMessage(`Updated the phone number of ${updatedPerson.name}`);
+          setTimeout(() => setNoticeMessage(""), 2000);
+        });
     } else {
       personService
         .createPerson({
@@ -65,6 +69,8 @@ const App = () => {
           setPersons(persons.concat(createdPerson));
           setNewName("");
           setNewNumber("");
+          setNoticeMessage(`Added ${createdPerson.name}`);
+          setTimeout(() => setNoticeMessage(""), 2000);
         })
         .catch((error) => {
           alert(
@@ -77,6 +83,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <NoticeMessage message={noticeMessage} />
 
       <Filter onChange={handleFilteredSubstrChange} value={filteredSubstr} />
 
