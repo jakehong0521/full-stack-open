@@ -10,7 +10,13 @@ const App = () => {
   const [filteredSubstr, setFilteredSubstr] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
   const [newNumber, setNewNumber] = useState<string>("");
-  const [persons, setPersons] = useState([]);
+  const [persons, setPersons] = useState<
+    {
+      id: string;
+      name: string;
+      number: string;
+    }[]
+  >([]);
 
   useEffect(() => {
     axios
