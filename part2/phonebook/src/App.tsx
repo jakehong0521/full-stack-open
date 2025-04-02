@@ -16,6 +16,16 @@ const App = () => {
     personService.getPersons().then(setPersons);
   }, []);
 
+  const handleDeletePerson = (person: Person) => {
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService.deletePerson(person.id).then(() => {
+        setPersons((prevPersons) =>
+          prevPersons.filter((currPerson) => currPerson.id !== person.id)
+        );
+      });
+    }
+  };
+
   const handleFilteredSubstrChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -73,6 +83,7 @@ const App = () => {
       <h2>Numbers</h2>
 
       <Persons
+        deletePerson={handleDeletePerson}
         persons={persons.filter((person) =>
           person.name.toLowerCase().includes(filteredSubstr.toLowerCase())
         )}

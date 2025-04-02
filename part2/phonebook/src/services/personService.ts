@@ -10,7 +10,11 @@ const getPersons = async (): Promise<Person[]> =>
 const createPerson = async (person: Omit<Person, "id">): Promise<Person> =>
   axios.post(`${BASE_URL}/persons`, person).then((response) => response.data);
 
+const deletePerson = async (id: string): Promise<void> =>
+  axios.delete(`${BASE_URL}/persons/${id}`);
+
 export default {
   createPerson,
+  deletePerson,
   getPersons,
 };
