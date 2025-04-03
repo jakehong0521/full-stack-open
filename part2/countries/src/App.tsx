@@ -38,7 +38,15 @@ function App() {
       {currCountries.length <= 10 && currCountries.length > 1 && (
         <div style={{ marginTop: "4px" }}>
           {currCountries.map((country) => (
-            <div key={country.name.official}>{country.name.common}</div>
+            <div key={country.name.official}>
+              {country.name.common}
+              <button
+                onClick={() => setInputStr(country.name.common)}
+                style={{ marginLeft: "8px" }}
+              >
+                show
+              </button>
+            </div>
           ))}
         </div>
       )}
