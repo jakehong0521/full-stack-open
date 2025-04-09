@@ -43,8 +43,12 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 app.post("/api/persons", (req, res) => {
-  if (!(req.body.name && req.body.number)) {
-    return res.status(400).json({ error: "name or number is missing" });
+  if (!req.body.name) {
+    return res.status(400).json({ error: "name is missing" });
+  }
+
+  if (!req.body.number) {
+    return res.status(400).json({ error: "number is missing" });
   }
 
   const existingPerson = persons.find((p) => p.name === req.body.name);
