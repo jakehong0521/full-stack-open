@@ -1,6 +1,7 @@
+const { generateUuid } = require("./utils");
 const express = require("express");
-const app = express();
 
+const app = express();
 app.use(express.json());
 
 let persons = [
@@ -39,6 +40,31 @@ app.get("/api/persons/:id", (req, res) => {
   } else {
     return res.status(404).end();
   }
+});
+
+app.post("/api/persons", (req, res) => {
+  if (!(req.body.name && req.body.number)) {
+    return res.status(400).json({ error: "name or number is missing" });
+  }
+
+  const existingPerson = persons.find((p) => p.name === req.body.name);
+  if (existingPerson) {
+    return res.status(400).json({ error: "name must be unique" });
+  }
+
+  const existingNumber = persons.find((p) => p.number === req.body.number);
+  if (existingNumber) {
+    return res.status(400).json({ error: "number must be unique" });
+  }
+
+  const newPerson = {
+    id: generateUuid(),
+    name: req.body.name,
+    number: req.body.number,
+  };
+  persons = persons.concat(newPerson);
+
+  return res.status(201).end();
 });
 
 app.delete("/api/persons/:id", (req, res) => {
