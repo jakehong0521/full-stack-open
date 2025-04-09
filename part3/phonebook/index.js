@@ -41,6 +41,18 @@ app.get("/api/persons/:id", (req, res) => {
   }
 });
 
+app.delete("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = persons.find((p) => p.id === id);
+
+  if (!person) {
+    return res.status(404).end();
+  }
+
+  persons = persons.filter((p) => p.id !== id);
+  return res.status(204).end();
+});
+
 app.get("/info", (req, res) => {
   const date = new Date();
   const personCount = persons.length;
