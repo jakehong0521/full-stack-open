@@ -4,6 +4,8 @@
   "description": "Full Stack Open Part 3 Phonebook Backend",
   "main": "index.js",
   "scripts": {
+    "build:frontend": "cd ../../part2/phonebook && pnpm build && cp -r dist ../../part3/phonebook",
+    "deploy:frontend": "pnpm run build:frontend && cd ../../part3/phonebook && git add dist && git commit -m 'build frontend' && git push",
     "dev": "node --watch index.js",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
