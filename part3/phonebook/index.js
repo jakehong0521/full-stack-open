@@ -72,7 +72,7 @@ app.post("/api/persons", (req, res) => {
   };
   persons = persons.concat(newPerson);
 
-  return res.status(201).end();
+  return res.status(201).json(newPerson);
 });
 
 app.delete("/api/persons/:id", (req, res) => {
