@@ -1,6 +1,10 @@
-const { generateUuid } = require("./utils");
+require("dotenv").config();
+
 const express = require("express");
 const morgan = require("morgan");
+
+const { generateUuid } = require("./utils");
+const { Person } = require("./mongo");
 
 const app = express();
 app.use(express.json());
@@ -33,7 +37,9 @@ let persons = [
 ];
 
 app.get("/api/persons", (req, res) => {
-  return res.json(persons);
+  Person.find({}).then((result) => {
+    res.json(result);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
