@@ -62,24 +62,13 @@ app.post("/api/persons", (req, res) => {
     return res.status(400).json({ error: "number is missing" });
   }
 
-  const existingPerson = persons.find((p) => p.name === req.body.name);
-  if (existingPerson) {
-    return res.status(400).json({ error: "name must be unique" });
-  }
-
-  const existingNumber = persons.find((p) => p.number === req.body.number);
-  if (existingNumber) {
-    return res.status(400).json({ error: "number must be unique" });
-  }
-
-  const newPerson = {
-    id: generateUuid(),
+  const newPerson = new Person({
     name: req.body.name,
     number: req.body.number,
-  };
-  persons = persons.concat(newPerson);
-
-  return res.status(201).json(newPerson);
+  });
+  newPerson.save().then((savedPerson) => {
+    return res.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
