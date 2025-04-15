@@ -42,17 +42,6 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = req.params.id;
-  const person = persons.find((p) => p.id === id);
-
-  if (person) {
-    return res.json(person);
-  } else {
-    return res.status(404).end();
-  }
-});
-
 app.post("/api/persons", (req, res) => {
   if (!req.body.name) {
     return res.status(400).json({ error: "name is missing" });
@@ -83,6 +72,37 @@ app.delete("/api/persons/:id", (req, res) => {
     });
 });
 
+app.get("/api/persons/:id", (req, res) => {
+  const id = req.params.id;
+  const person = persons.find((p) => p.id === id);
+
+  if (person) {
+    return res.json(person);
+  } else {
+    return res.status(404).end();
+  }
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+
+  if (!id) {
+    throw new Error("missing id");
+  }
+
+  if (!req.body.number) {
+    throw new Error("missing number");
+  }
+
+  Person.findByIdAndUpdate(id, { number: req.body.number }, { new: true })
+    .then((updatedPerson) => {
+      return res.json(updatedPerson);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
 app.get("/info", (req, res) => {
   const date = new Date();
   const personCount = persons.length;
@@ -96,7 +116,7 @@ const errorHandler = (error, req, res, next) => {
     return res.status(400).send({ error: "malformatted id" });
   }
 
-  res.status(400).send({ error: "something went wrong" });
+  res.status(400).send({ error: error.message });
 };
 
 const PORT = process.env.PORT || 3001;
