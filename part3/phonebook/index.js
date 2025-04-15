@@ -13,29 +13,6 @@ app.use(express.static("dist"));
 morgan.token("reqBody", (req, res) => JSON.stringify(req.body));
 app.use(morgan(":method :url :status - :response-time ms :reqBody"));
 
-let persons = [
-  {
-    id: "1",
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: "2",
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: "3",
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: "4",
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((result) => {
     res.json(result);
@@ -72,15 +49,23 @@ app.delete("/api/persons/:id", (req, res) => {
     });
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
-  const person = persons.find((p) => p.id === id);
 
-  if (person) {
-    return res.json(person);
-  } else {
-    return res.status(404).end();
+  if (!id) {
+    return res.status(400).json({ error: "missing id" });
   }
+
+  Person.findById(id)
+    .then((person) => {
+      if (!person) {
+        return res.status(404).end();
+      }
+      return res.json(person);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -103,12 +88,19 @@ app.put("/api/persons/:id", (req, res, next) => {
     });
 });
 
-app.get("/info", (req, res) => {
-  const date = new Date();
-  const personCount = persons.length;
-  return res.send(
-    `<p>Phonebook has info for ${personCount} people</p><p>${date}</p>`
-  );
+app.get("/info", (req, res, next) => {
+  Person.countDocuments({})
+    .then((count) => {
+      const date = new Date();
+      return res.send(
+        `<p>Phonebook has info for ${count} ${
+          count > 1 ? "people" : "person"
+        }</p><p>${date}</p>`
+      );
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 const errorHandler = (error, req, res, next) => {
