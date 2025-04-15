@@ -61,26 +61,34 @@ const App = () => {
     const existingPerson = persons.find((person) => person.name === newName);
 
     if (existingPerson) {
-      personService
-        .updatePerson({ ...existingPerson, number: newNumber })
-        .then((updatedPerson) => {
-          setPersons((prevPersons) =>
-            prevPersons.map((person) =>
-              person.id === updatedPerson.id ? updatedPerson : person
-            )
-          );
-          setNoticeMessage(`Updated the phone number of ${updatedPerson.name}`);
-          setTimeout(() => setNoticeMessage(""), 2000);
-        })
-        .catch(() => {
-          setErrorMessage(
-            `Information of ${existingPerson.name} has already been removed from server`
-          );
-          setTimeout(() => setErrorMessage(""), 2000);
-          setPersons((prevPersons) =>
-            prevPersons.filter((person) => person.id !== existingPerson.id)
-          );
-        });
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        personService
+          .updatePerson({ ...existingPerson, number: newNumber })
+          .then((updatedPerson) => {
+            setPersons((prevPersons) =>
+              prevPersons.map((person) =>
+                person.id === updatedPerson.id ? updatedPerson : person
+              )
+            );
+            setNoticeMessage(
+              `Updated the phone number of ${updatedPerson.name}`
+            );
+            setTimeout(() => setNoticeMessage(""), 2000);
+          })
+          .catch(() => {
+            setErrorMessage(
+              `Information of ${existingPerson.name} has already been removed from server`
+            );
+            setTimeout(() => setErrorMessage(""), 2000);
+            setPersons((prevPersons) =>
+              prevPersons.filter((person) => person.id !== existingPerson.id)
+            );
+          });
+      }
     } else {
       personService
         .createPerson({
