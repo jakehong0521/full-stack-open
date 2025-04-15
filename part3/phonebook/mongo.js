@@ -12,7 +12,16 @@ const personSchema = new Schema({
     required: true,
     minlength: 3,
   },
-  number: String,
+  number: {
+    type: String,
+    required: true,
+    validate: {
+      validator: (number) => {
+        const regex = /^\d{2,3}-\d+$/;
+        return regex.test(number);
+      },
+    },
+  },
 });
 personSchema.set("toJSON", {
   transform: (document, returnedObject) => {

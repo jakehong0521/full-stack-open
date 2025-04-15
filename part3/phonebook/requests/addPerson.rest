@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "name": "Jake",
-  "number": "546-910-2909"
+  "number": "546-9102909"
 }
 
 ### Invalid: Name < 3 chars
@@ -13,5 +13,14 @@ Content-Type: application/json
 
 {
   "name": "J",
+  "number": "546-910-2909"
+}
+
+### Invalid: Phone number format
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Jake",
   "number": "546-910-2909"
 }
