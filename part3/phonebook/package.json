@@ -7,6 +7,7 @@
     "build:frontend": "cd ../../part2/phonebook && pnpm build && cp -r dist ../../part3/phonebook",
     "deploy:frontend": "pnpm run build:frontend && cd ../../part3/phonebook && git add dist && git commit -m 'build frontend' && git push",
     "dev": "node --watch index.js",
+    "lint": "eslint .",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -18,5 +19,11 @@
     "express": "^5.1.0",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "@stylistic/eslint-plugin-js": "^4.2.0",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0"
   }
 }

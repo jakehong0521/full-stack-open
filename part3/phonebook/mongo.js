@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const mongoose = require('mongoose')
+const { Schema } = mongoose
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI
 
-mongoose.set("strictQuery", false);
-mongoose.connect(url);
+mongoose.set('strictQuery', false)
+mongoose.connect(url)
 
 const personSchema = new Schema({
   name: {
@@ -17,22 +17,22 @@ const personSchema = new Schema({
     required: true,
     validate: {
       validator: (number) => {
-        const regex = /^\d{2,3}-\d+$/;
-        return regex.test(number);
+        const regex = /^\d{2,3}-\d+$/
+        return regex.test(number)
       },
     },
   },
-});
-personSchema.set("toJSON", {
+})
+personSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString();
-    delete returnedObject._id;
-    delete returnedObject.__v;
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
   },
-});
+})
 
-const Person = mongoose.model("Person", personSchema);
+const Person = mongoose.model('Person', personSchema)
 
 module.exports = {
   Person,
-};
+}
