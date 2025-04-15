@@ -19,7 +19,7 @@ app.get("/api/persons", (req, res) => {
   });
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   if (!req.body.name) {
     return res.status(400).json({ error: "name is missing" });
   }
@@ -32,9 +32,10 @@ app.post("/api/persons", (req, res) => {
     name: req.body.name,
     number: req.body.number,
   });
-  newPerson.save().then((savedPerson) => {
-    return res.json(savedPerson);
-  });
+  newPerson
+    .save()
+    .then((savedPerson) => res.json(savedPerson))
+    .catch((err) => next(err));
 });
 
 app.delete("/api/persons/:id", (req, res) => {
@@ -79,13 +80,22 @@ app.put("/api/persons/:id", (req, res, next) => {
     throw new Error("missing number");
   }
 
+  const inputPerson = new Person({
+    name: req.body.name,
+    number: req.body.number,
+  });
+
+  const validationErr = inputPerson.validateSync({
+    name: req.body.name,
+    number: req.body.number,
+  });
+  if (validationErr) {
+    return res.status(400).send({ error: validationErr.message });
+  }
+
   Person.findByIdAndUpdate(id, { number: req.body.number }, { new: true })
-    .then((updatedPerson) => {
-      return res.json(updatedPerson);
-    })
-    .catch((error) => {
-      next(error);
-    });
+    .then((updatedPerson) => res.json(updatedPerson))
+    .catch((error) => next(error));
 });
 
 app.get("/info", (req, res, next) => {
@@ -108,7 +118,7 @@ const errorHandler = (error, req, res, next) => {
     return res.status(400).send({ error: "malformatted id" });
   }
 
-  res.status(400).send({ error: error.message });
+  return res.status(400).send({ error: error.message });
 };
 
 const PORT = process.env.PORT || 3001;

@@ -1,7 +1,8 @@
-PUT http://localhost:3001/api/persons/67fdc2052a3e18816c64d575
+### Update a person
+PUT http://localhost:3001/api/persons/67fdd8b8821a3a3e2eb3646c
 Content-Type: application/json
 
 {
-  "name": "Jake Hong",
-  "number": ""
+  "name": "Jake",
+  "number": "123123"
 }

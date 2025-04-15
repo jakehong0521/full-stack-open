@@ -1,7 +1,17 @@
+### Valid request to add a new person
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-  "name": "Jake Hong",
+  "name": "Jake",
+  "number": "546-910-2909"
+}
+
+### Invalid: Name < 3 chars
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "J",
   "number": "546-910-2909"
 }

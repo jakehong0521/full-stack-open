@@ -20,6 +20,20 @@ const App = () => {
     personService.getPersons().then(setPersons);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setNoticeMessage("");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [noticeMessage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setErrorMessage("");
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [errorMessage]);
+
   const handleDeletePerson = (person: Person) => {
     if (window.confirm(`Delete ${person.name} ?`)) {
       personService
@@ -77,13 +91,11 @@ const App = () => {
             setNoticeMessage(
               `Updated the phone number of ${updatedPerson.name}`
             );
-            setTimeout(() => setNoticeMessage(""), 2000);
           })
           .catch(() => {
             setErrorMessage(
               `Information of ${existingPerson.name} has already been removed from server`
             );
-            setTimeout(() => setErrorMessage(""), 2000);
             setPersons((prevPersons) =>
               prevPersons.filter((person) => person.id !== existingPerson.id)
             );
@@ -100,12 +112,9 @@ const App = () => {
           setNewName("");
           setNewNumber("");
           setNoticeMessage(`Added ${createdPerson.name}`);
-          setTimeout(() => setNoticeMessage(""), 2000);
         })
         .catch((error) => {
-          alert(
-            `An error occurred while attempting to add a new person: ${error}`
-          );
+          setErrorMessage(error.response.data.error);
         });
     }
   };
