@@ -13,7 +13,7 @@ const deletePerson = async (id: string): Promise<void> =>
 
 const updatePerson = async (person: Person): Promise<Person> =>
   axios
-    .patch(`/api/persons/${person.id}`, person)
+    .put(`/api/persons/${person.id}`, person)
     .then((response) => response.data);
 
 export default {
