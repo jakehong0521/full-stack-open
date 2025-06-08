@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "author": "Jay Hong",
+  "likes": 11,
+  "title": "Jay's Blog",
+  "url": "http://jayhong0724.com"
+}
