@@ -36,6 +36,27 @@ const mostBlogs = (blogs) => {
   return undefined;
 };
 
+const mostLikes = (blogs) => {
+  let author;
+  let likesBest = 0;
+
+  const totalLikesByAuthor = blogs.reduce((acc, blog) => {
+    if (blog.likes > likesBest) {
+      author = blog.author;
+      likesBest = blog.likes;
+    }
+
+    acc[blog.author] = (acc[blog.author] || 0) + blog.likes;
+    return acc;
+  }, {});
+
+  if (author) {
+    return { author, likes: totalLikesByAuthor[author] };
+  }
+
+  return undefined;
+};
+
 const totalLikes = (blogs) => {
   return blogs.reduce((sum, blog) => sum + blog.likes, 0);
 };
@@ -44,5 +65,6 @@ module.exports = {
   dummy,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
   totalLikes,
 };
