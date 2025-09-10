@@ -32,6 +32,15 @@ test("a specific blog is within the returned blogs", async () => {
   assert(titles.includes(helper.initialBlogs[0].title));
 });
 
+test("unique identifier property of the blog posts is named id instead of _id", async () => {
+  const response = await api.get("/api/blogs");
+  const blogs = response.body;
+  blogs.forEach((blog) => {
+    assert("id" in blog);
+    assert(!("_id" in blog));
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
