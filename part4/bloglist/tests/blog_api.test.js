@@ -41,6 +41,23 @@ test("unique identifier property of the blog posts is named id instead of _id", 
   });
 });
 
+test("a valid blog can be added", async () => {
+  await api
+    .post("/api/blogs")
+    .send({
+      author: "Mock Author",
+      likes: 0,
+      title: "Mock Title",
+      url: "http://mock.com",
+    })
+    .expect(201);
+
+  const response = await api.get("/api/blogs");
+  const titles = response.body.map((blog) => blog.title);
+  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1);
+  assert(titles.includes("Mock Title"));
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
