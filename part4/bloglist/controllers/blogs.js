@@ -26,4 +26,35 @@ blogsRouter.post("/", async (request, response) => {
   }
 });
 
+blogsRouter.put("/:id", async (request, response) => {
+  try {
+    const blog = await Blog.findById(request.params.id);
+
+    if (!blog) {
+      return response.status(404).end();
+    }
+
+    if (
+      !request.body.author ||
+      !request.body.likes ||
+      !request.body.title ||
+      !request.body.url
+    ) {
+      return response
+        .status(400)
+        .json({ error: "Missing required properties" });
+    }
+
+    blog.author = request.body.author;
+    blog.likes = request.body.likes;
+    blog.title = request.body.title;
+    blog.url = request.body.url;
+
+    const updatedBlog = await blog.save();
+    return response.json(updatedBlog);
+  } catch (error) {
+    return response.status(400).json(error);
+  }
+});
+
 module.exports = blogsRouter;

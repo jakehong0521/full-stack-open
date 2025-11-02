@@ -105,6 +105,39 @@ test("non-existent blog cannot be deleted", async () => {
   await api.delete(`/api/blogs/non-existent-id`).expect(400);
 });
 
+test("a blog can be updated by id", async () => {
+  const respBlogs = await api.get("/api/blogs");
+  const blogId = respBlogs.body[0].id;
+  const updatedBlog = (
+    await api
+      .put(`/api/blogs/${blogId}`)
+      .send({
+        author: "Updated Author",
+        likes: 10,
+        title: "Updated Title",
+        url: "http://updated-url.com",
+      })
+      .expect(200)
+  ).body;
+
+  assert.strictEqual(updatedBlog.author, "Updated Author");
+  assert.strictEqual(updatedBlog.likes, 10);
+  assert.strictEqual(updatedBlog.title, "Updated Title");
+  assert.strictEqual(updatedBlog.url, "http://updated-url.com");
+});
+
+test("non-existent blog cannot be updated", async () => {
+  await api
+    .put(`/api/blogs/non-existent-id`)
+    .send({
+      author: "Updated Author",
+      likes: 10,
+      title: "Updated Title",
+      url: "http://updated-url.com",
+    })
+    .expect(400);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
