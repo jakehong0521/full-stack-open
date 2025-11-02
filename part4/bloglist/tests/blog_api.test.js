@@ -72,6 +72,23 @@ test("if likes property is missing, it will default to 0", async () => {
   assert.strictEqual(blog.likes, 0);
 });
 
+test("if title or url properties are missing, respond with status code 400 Bad Request", async () => {
+  await api
+    .post("/api/blogs")
+    .send({
+      author: "Mock Author",
+      url: "http://mock.com",
+    })
+    .expect(400);
+  await api
+    .post("/api/blogs")
+    .send({
+      author: "Mock Author",
+      title: "Mock Title",
+    })
+    .expect(400);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
