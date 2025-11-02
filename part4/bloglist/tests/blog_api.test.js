@@ -89,6 +89,22 @@ test("if title or url properties are missing, respond with status code 400 Bad R
     .expect(400);
 });
 
+test("a blog can be deleted by id", async () => {
+  const respBlogsBeforeDelete = await api.get("/api/blogs");
+  const blogId = respBlogsBeforeDelete.body[0].id;
+  await api.delete(`/api/blogs/${blogId}`).expect(204);
+
+  const respBlogsAfterDelete = await api.get("/api/blogs");
+  assert.strictEqual(
+    respBlogsAfterDelete.body.length,
+    helper.initialBlogs.length - 1
+  );
+});
+
+test("non-existent blog cannot be deleted", async () => {
+  await api.delete(`/api/blogs/non-existent-id`).expect(400);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
