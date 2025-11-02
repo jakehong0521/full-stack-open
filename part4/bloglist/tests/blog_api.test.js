@@ -58,6 +58,20 @@ test("a valid blog can be added", async () => {
   assert(titles.includes("Mock Title"));
 });
 
+test("if likes property is missing, it will default to 0", async () => {
+  const response = await api
+    .post("/api/blogs")
+    .send({
+      author: "Mock Author",
+      title: "Mock Title",
+      url: "http://mock.com",
+    })
+    .expect(201);
+
+  const blog = response.body;
+  assert.strictEqual(blog.likes, 0);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
