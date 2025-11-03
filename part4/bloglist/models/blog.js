@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const blogSchema = mongoose.Schema({
+const blogSchema = new mongoose.Schema({
   author: String,
   likes: {
     type: Number,
