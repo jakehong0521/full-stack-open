@@ -4,6 +4,7 @@ const supertest = require("supertest");
 const assert = require("node:assert");
 
 const app = require("../app");
+const Blog = require("../models/blog");
 const User = require("../models/user");
 const helper = require("./user_api.helper");
 
@@ -11,7 +12,21 @@ const api = supertest(app);
 
 beforeEach(async () => {
   await User.deleteMany({});
-  await User.insertMany(helper.initialUsers);
+  const users = await User.insertMany(helper.initialUsers);
+  await Promise.all(
+    users.map(async (user, idx) => {
+      const blog = new Blog({
+        author: user.name,
+        likes: 100,
+        title: `Blog ${idx + 1}`,
+        url: `https://www.example.com/blog${idx + 1}`,
+        user: user.id,
+      });
+      await blog.save();
+      user.blogs = [...user.blogs, blog.id];
+      await user.save();
+    })
+  );
 });
 
 test("users can be added", async () => {
@@ -83,6 +98,20 @@ test("username must be unique", async () => {
       password: "123456",
     })
     .expect(400);
+});
+
+test("users are returned with their blogs", async () => {
+  const response = await api
+    .get("/api/users")
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+  const users = response.body;
+  assert.strictEqual(users.length, helper.initialUsers.length);
+  users.forEach((user) => {
+    user.blogs.forEach((blog) => {
+      assert.strictEqual(blog.author, user.name);
+    });
+  });
 });
 
 after(async () => {

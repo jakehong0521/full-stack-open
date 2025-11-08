@@ -15,6 +15,13 @@ const initialBlogs = [
   },
 ];
 
+const initialUser = {
+  username: "testuser",
+  passwordHash: "testpassword",
+  name: "Test User",
+};
+
 module.exports = {
   initialBlogs,
+  mockUser: initialUser,
 };

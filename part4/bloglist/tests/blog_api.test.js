@@ -5,13 +5,19 @@ const assert = require("node:assert");
 
 const app = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const helper = require("./blog_api.helper");
 
 const api = supertest(app);
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  const resp = await Blog.insertMany(helper.initialBlogs);
+  await User.deleteMany({});
+  const user = new User(helper.initialUser);
+  await user.save();
+  await Blog.insertMany(
+    helper.initialBlogs.map((blog) => ({ ...blog, user: user.id }))
+  );
 });
 
 test("blogs are returned as json", async () => {
@@ -56,6 +62,22 @@ test("a valid blog can be added", async () => {
   const titles = response.body.map((blog) => blog.title);
   assert.strictEqual(response.body.length, helper.initialBlogs.length + 1);
   assert(titles.includes("Mock Title"));
+});
+
+test("a user gets associated with a newly created blog", async () => {
+  const response = await api
+    .post("/api/blogs")
+    .send({
+      author: "Mock Author",
+      likes: 0,
+      title: "Mock Title",
+      url: "http://mock.com",
+    })
+    .expect(201);
+  const blog = response.body;
+  assert.strictEqual(blog.user.name, helper.initialUser.name);
+  assert.strictEqual(blog.user.username, helper.initialUser.username);
+  assert.strictEqual(typeof blog.user.id, "string");
 });
 
 test("if likes property is missing, it will default to 0", async () => {
