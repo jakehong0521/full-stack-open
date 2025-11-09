@@ -2,6 +2,7 @@ const { after, beforeEach, test } = require("node:test");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const assert = require("node:assert");
+const jwt = require("jsonwebtoken");
 
 const app = require("../app");
 const Blog = require("../models/blog");
@@ -47,10 +48,57 @@ test("unique identifier property of the blog posts is named id instead of _id", 
   });
 });
 
+test("a valid blog can be added", async () => {
+  const user = await User.findOne({ username: helper.mockUser.username });
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+  const token = jwt.sign(userForToken, process.env.SECRET);
+
+  const newBlog = {
+    title: "New Blog Title",
+    author: "New Author",
+    url: "http://new-url.com",
+    likes: 5,
+  };
+  await api
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newBlog)
+    .expect(201);
+
+  const response = await api.get("/api/blogs");
+  const titles = response.body.map((blog) => blog.title);
+  assert(titles.includes("New Blog Title"));
+});
+
+test("adding a valid blog fails with status code 401 if token is not provided", async () => {
+  const newBlog = {
+    title: "New Blog Title",
+    author: "New Author",
+    url: "http://new-url.com",
+    likes: 5,
+  };
+  await api.post("/api/blogs").send(newBlog).expect(401);
+});
+
 test("a blog can be deleted by id", async () => {
-  const respBlogsBeforeDelete = await api.get("/api/blogs");
+  const user = await User.findOne({ username: helper.mockUser.username });
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+  const token = jwt.sign(userForToken, process.env.SECRET);
+
+  const respBlogsBeforeDelete = await api
+    .get("/api/blogs")
+    .set("Authorization", `Bearer ${token}`);
   const blogId = respBlogsBeforeDelete.body[0].id;
-  await api.delete(`/api/blogs/${blogId}`).expect(204);
+  await api
+    .delete(`/api/blogs/${blogId}`)
+    .set("Authorization", `Bearer ${token}`)
+    .expect(204);
 
   const respBlogsAfterDelete = await api.get("/api/blogs");
   assert.strictEqual(
@@ -60,7 +108,16 @@ test("a blog can be deleted by id", async () => {
 });
 
 test("non-existent blog cannot be deleted", async () => {
-  await api.delete(`/api/blogs/non-existent-id`).expect(400);
+  const user = await User.findOne({ username: helper.mockUser.username });
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+  const token = jwt.sign(userForToken, process.env.SECRET);
+  await api
+    .delete(`/api/blogs/non-existent-id`)
+    .set("Authorization", `Bearer ${token}`)
+    .expect(400);
 });
 
 test("a blog can be updated by id", async () => {
