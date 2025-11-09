@@ -6,12 +6,23 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 
 blogsRouter.delete("/:id", async (request, response) => {
-  try {
-    await Blog.findByIdAndDelete(request.params.id);
-    return response.status(204).end();
-  } catch (error) {
-    return response.status(400).json(error);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
   }
+
+  const blog = await Blog.findById(request.params.id);
+  if (!blog) {
+    return response.status(404).end();
+  }
+  if (blog.user.toString() !== decodedToken.id) {
+    return response
+      .status(403)
+      .json({ error: "only the creator can delete a blog" });
+  }
+
+  await Blog.findByIdAndDelete(request.params.id);
+  return response.status(204).end();
 });
 
 blogsRouter.get("/", async (request, response) => {
