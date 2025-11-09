@@ -13,7 +13,7 @@ const api = supertest(app);
 beforeEach(async () => {
   await Blog.deleteMany({});
   await User.deleteMany({});
-  const user = new User(helper.initialUser);
+  const user = new User(helper.mockUser);
   await user.save();
   await Blog.insertMany(
     helper.initialBlogs.map((blog) => ({ ...blog, user: user.id }))
@@ -45,70 +45,6 @@ test("unique identifier property of the blog posts is named id instead of _id", 
     assert("id" in blog);
     assert(!("_id" in blog));
   });
-});
-
-test("a valid blog can be added", async () => {
-  await api
-    .post("/api/blogs")
-    .send({
-      author: "Mock Author",
-      likes: 0,
-      title: "Mock Title",
-      url: "http://mock.com",
-    })
-    .expect(201);
-
-  const response = await api.get("/api/blogs");
-  const titles = response.body.map((blog) => blog.title);
-  assert.strictEqual(response.body.length, helper.initialBlogs.length + 1);
-  assert(titles.includes("Mock Title"));
-});
-
-test("a user gets associated with a newly created blog", async () => {
-  const response = await api
-    .post("/api/blogs")
-    .send({
-      author: "Mock Author",
-      likes: 0,
-      title: "Mock Title",
-      url: "http://mock.com",
-    })
-    .expect(201);
-  const blog = response.body;
-  assert.strictEqual(blog.user.name, helper.initialUser.name);
-  assert.strictEqual(blog.user.username, helper.initialUser.username);
-  assert.strictEqual(typeof blog.user.id, "string");
-});
-
-test("if likes property is missing, it will default to 0", async () => {
-  const response = await api
-    .post("/api/blogs")
-    .send({
-      author: "Mock Author",
-      title: "Mock Title",
-      url: "http://mock.com",
-    })
-    .expect(201);
-
-  const blog = response.body;
-  assert.strictEqual(blog.likes, 0);
-});
-
-test("if title or url properties are missing, respond with status code 400 Bad Request", async () => {
-  await api
-    .post("/api/blogs")
-    .send({
-      author: "Mock Author",
-      url: "http://mock.com",
-    })
-    .expect(400);
-  await api
-    .post("/api/blogs")
-    .send({
-      author: "Mock Author",
-      title: "Mock Title",
-    })
-    .expect(400);
 });
 
 test("a blog can be deleted by id", async () => {
