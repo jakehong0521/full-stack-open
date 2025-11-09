@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import Blog from "./components/Blog";
+import { Notice } from "./components/Notice";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -10,7 +11,8 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+
+  const [notice, setNotice] = useState(null);
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
@@ -29,6 +31,15 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (notice) {
+      const timer = setTimeout(() => {
+        setNotice(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [notice]);
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -42,10 +53,10 @@ const App = () => {
       setPassword("");
       blogService.setToken(user.token);
     } catch (error) {
-      setError("Failed to login: " + error.toString());
-      setTimeout(() => {
-        setError(null);
-      }, 3000);
+      setNotice({
+        message: "Failed to login: " + error.toString(),
+        type: "error",
+      });
     }
   };
 
@@ -61,6 +72,10 @@ const App = () => {
     setTitle("");
     setAuthor("");
     setUrl("");
+    setNotice({
+      message: `A new blog "${title}" by ${author} added`,
+      type: "success",
+    });
   };
 
   return (
@@ -68,6 +83,7 @@ const App = () => {
       {user && (
         <div>
           <h2>blogs</h2>
+          {notice && <Notice notice={notice} />}
           <div>
             <span>{user.name} logged in</span>
             <button onClick={handleLogout}>logout</button>
@@ -105,15 +121,18 @@ const App = () => {
             <button type="submit">create</button>
           </form>
 
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
+          <div style={{ marginTop: "12px" }}>
+            {blogs.map((blog) => (
+              <Blog key={blog.id} blog={blog} />
+            ))}
+          </div>
         </div>
       )}
 
       {!user && (
         <div>
           <h2>log in to application</h2>
+          {notice && <Notice notice={notice} />}
           <form onSubmit={handleLogin}>
             <div>
               <label>
@@ -139,7 +158,6 @@ const App = () => {
             </div>
             <button type="submit">login</button>
           </form>
-          {error && <div style={{ color: "red" }}>{error}</div>}
         </div>
       )}
     </div>
