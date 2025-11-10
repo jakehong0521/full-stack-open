@@ -1,7 +1,17 @@
 import { useState } from "react";
 
+import blogService from "../services/blogs";
+
 const Blog = ({ blog }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleLikeClick = async () => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    };
+    await blogService.put(updatedBlog);
+  };
 
   return (
     <div style={blogStyle}>
@@ -16,7 +26,7 @@ const Blog = ({ blog }) => {
         <div>
           <div>{blog.url}</div>
           <div>
-            likes {blog.likes} <button>like</button>
+            likes {blog.likes} <button onClick={handleLikeClick}>like</button>
           </div>
           <div>{blog.author}</div>
         </div>
