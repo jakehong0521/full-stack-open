@@ -1,83 +1,83 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react'
 
-import Blog from "./components/Blog";
-import BlogForm from "./components/BlogForm";
-import { Notice } from "./components/Notice";
-import Togglable from "./components/Togglable";
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import { Notice } from './components/Notice'
+import Togglable from './components/Togglable'
+import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState([])
 
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null)
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  const [notice, setNotice] = useState(null);
+  const [notice, setNotice] = useState(null)
 
-  const blogFormRef = useRef();
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  const blogFormRef = useRef()
 
   useEffect(() => {
-    const userStr = window.localStorage.getItem("user");
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
+
+  useEffect(() => {
+    const userStr = window.localStorage.getItem('user')
     if (userStr) {
-      const user = JSON.parse(userStr);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(userStr)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (notice) {
       const timer = setTimeout(() => {
-        setNotice(null);
-      }, 3000);
-      return () => clearTimeout(timer);
+        setNotice(null)
+      }, 3000)
+      return () => clearTimeout(timer)
     }
-  }, [notice]);
+  }, [notice])
 
   const handleLogin = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const user = await loginService.login({
         username,
         password,
-      });
-      setUser(user);
-      setUsername("");
-      setPassword("");
-      blogService.setToken(user.token);
+      })
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      blogService.setToken(user.token)
     } catch (error) {
       setNotice({
-        message: "Failed to login: " + error.toString(),
-        type: "error",
-      });
+        message: 'Failed to login: ' + error.toString(),
+        type: 'error',
+      })
     }
-  };
+  }
 
   const handleLogout = () => {
-    loginService.logout();
-    setUser(null);
-  };
+    loginService.logout()
+    setUser(null)
+  }
 
   const handleCreateBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-    await blogService.create(blogObject);
-    await blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogFormRef.current.toggleVisibility()
+    await blogService.create(blogObject)
+    await blogService.getAll().then((blogs) => setBlogs(blogs))
     setNotice({
       message: `A new blog "${blogObject.title}" by ${blogObject.author} added`,
-      type: "success",
-    });
-  };
+      type: 'success',
+    })
+  }
 
   const handleDeleteBlog = async (blogId) => {
-    setBlogs(blogs.filter((blog) => blog.id !== blogId));
-  };
+    setBlogs(blogs.filter((blog) => blog.id !== blogId))
+  }
 
   return (
     <div>
@@ -94,7 +94,7 @@ const App = () => {
             <BlogForm createBlog={handleCreateBlog} />
           </Togglable>
 
-          <div style={{ marginTop: "12px" }}>
+          <div style={{ marginTop: '12px' }}>
             {blogs
               .toSorted((blogA, blogB) => blogB.likes - blogA.likes)
               .map((blog) => (
@@ -141,7 +141,7 @@ const App = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App
