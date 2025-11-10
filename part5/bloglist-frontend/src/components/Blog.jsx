@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import blogService from "../services/blogs";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, isUserCreated, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleLikeClick = async () => {
@@ -11,6 +11,13 @@ const Blog = ({ blog }) => {
       likes: blog.likes + 1,
     };
     await blogService.put(updatedBlog);
+  };
+
+  const handleDeleteClick = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.deleteById(blog.id);
+      onDelete(blog.id);
+    }
   };
 
   return (
@@ -29,6 +36,7 @@ const Blog = ({ blog }) => {
             likes {blog.likes} <button onClick={handleLikeClick}>like</button>
           </div>
           <div>{blog.author}</div>
+          {isUserCreated && <button onClick={handleDeleteClick}>remove</button>}
         </div>
       )}
     </div>

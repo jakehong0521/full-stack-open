@@ -75,6 +75,10 @@ const App = () => {
     });
   };
 
+  const handleDeleteBlog = async (blogId) => {
+    setBlogs(blogs.filter((blog) => blog.id !== blogId));
+  };
+
   return (
     <div>
       {user && (
@@ -94,7 +98,12 @@ const App = () => {
             {blogs
               .toSorted((blogA, blogB) => blogB.likes - blogA.likes)
               .map((blog) => (
-                <Blog key={blog.id} blog={blog} />
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  onDelete={handleDeleteBlog}
+                  isUserCreated={user.id === blog.user.id}
+                />
               ))}
           </div>
         </div>
