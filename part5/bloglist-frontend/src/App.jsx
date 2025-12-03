@@ -79,6 +79,15 @@ const App = () => {
     setBlogs(blogs.filter((blog) => blog.id !== blogId))
   }
 
+  const handleLikeClick = async (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+    }
+    await blogService.put(updatedBlog)
+    setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)))
+  }
+
   return (
     <div>
       {user && (
@@ -102,6 +111,7 @@ const App = () => {
                   key={blog.id}
                   blog={blog}
                   onDelete={handleDeleteBlog}
+                  onLikeClick={() => handleLikeClick(blog)}
                   isUserCreated={user.id === blog.user.id}
                 />
               ))}

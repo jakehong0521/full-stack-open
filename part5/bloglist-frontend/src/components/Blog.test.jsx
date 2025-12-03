@@ -34,3 +34,28 @@ test('renders blog URL and number of likes when expanded', async () => {
   expect(screen.getByText(blog.url)).toBeInTheDocument()
   expect(screen.getByText(`likes ${blog.likes}`)).toBeInTheDocument()
 })
+
+test('calls the like handler when the like button is clicked', async () => {
+  const blog = {
+    title: 'Test Blog',
+    author: 'Test Author',
+    url: 'http://testurl.com',
+    likes: 10,
+  }
+  const onLikeClickMock = vi.fn()
+  render(
+    <Blog
+      blog={blog}
+      isUserCreated={false}
+      onLikeClick={onLikeClickMock}
+      onDelete={() => {}}
+    />
+  )
+
+  await userEvent.click(screen.getByText('view'))
+  const likeBtn = screen.getByText('like')
+  await userEvent.click(likeBtn)
+  await userEvent.click(likeBtn)
+
+  expect(onLikeClickMock).toHaveBeenCalledTimes(2)
+})
