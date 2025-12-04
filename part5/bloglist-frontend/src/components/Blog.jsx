@@ -13,7 +13,7 @@ const Blog = ({ blog, isUserCreated, onLikeClick, onDelete }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} title="Blog">
       <div>
         {blog.title} - {blog.author}{' '}
         <button onClick={() => setIsExpanded(!isExpanded)}>

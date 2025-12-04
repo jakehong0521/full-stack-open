@@ -104,5 +104,38 @@ describe("Blog app", () => {
         page.getByRole("button", { name: "remove" })
       ).not.toBeVisible();
     });
+
+    test("blogs are ordered by likes in descending order", async ({
+      page,
+      request,
+    }) => {
+      const otherBlog = {
+        title: "Another blog",
+        author: "Jay Hong",
+        url: "http://another-blog.com",
+      };
+      await createBlog(page, mockBlog);
+      await createBlog(page, otherBlog);
+
+      const firstBlog = page.getByTitle("Blog").first();
+      await firstBlog.getByRole("button", { name: "view" }).click();
+      const firstLikeButton = firstBlog.getByRole("button", { name: "like" });
+      await firstLikeButton.click();
+      await expect(
+        firstBlog.getByText("likes 1", { exact: false })
+      ).toBeVisible();
+
+      const secondBlog = page.getByTitle("Blog").nth(1);
+      await secondBlog.getByRole("button", { name: "view" }).click();
+      const secondLikeButton = secondBlog.getByRole("button", { name: "like" });
+      await secondLikeButton.click();
+      await expect(
+        secondBlog.getByText("likes 1", { exact: false })
+      ).toBeVisible();
+      await secondLikeButton.click();
+      await expect(
+        firstBlog.getByText("likes 2", { exact: false })
+      ).toBeVisible();
+    });
   });
 });
