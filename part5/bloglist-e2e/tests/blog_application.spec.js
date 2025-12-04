@@ -66,5 +66,18 @@ describe("Blog app", () => {
       await likeButton.click();
       await expect(page.getByText("likes 1", { exact: false })).toBeVisible();
     });
+
+    test("the user who added a blog can delete it", async ({ page }) => {
+      page.on("dialog", (dialog) => dialog.accept());
+      await createBlog(page, mockBlog);
+      await page.getByRole("button", { name: "view" }).click();
+      const deleteButton = page.getByRole("button", { name: "remove" });
+      await deleteButton.click();
+      await expect(
+        page.getByText(`${mockBlog.title} - ${mockBlog.author}`, {
+          exact: false,
+        })
+      ).not.toBeVisible();
+    });
   });
 });
