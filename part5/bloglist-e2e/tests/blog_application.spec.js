@@ -7,6 +7,11 @@ const mockUser = {
   username: "jake",
   password: "password",
 };
+const mockBlog = {
+  title: "E2E testing guide",
+  author: "Jake Hong",
+  url: "http://e2e-testing-guide.com",
+};
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -43,11 +48,6 @@ describe("Blog app", () => {
     });
 
     test("a new blog can be created", async ({ page }) => {
-      const mockBlog = {
-        title: "E2E testing guide",
-        author: "Jake Hong",
-        url: "http://e2e-testing-guide.com",
-      };
       await createBlog(page, mockBlog);
       await expect(
         page.getByText("a new blog", { exact: false })
@@ -57,6 +57,14 @@ describe("Blog app", () => {
           exact: false,
         })
       ).toBeVisible();
+    });
+
+    test("a blog can be liked", async ({ page }) => {
+      await createBlog(page, mockBlog);
+      await page.getByRole("button", { name: "view" }).click();
+      const likeButton = page.getByRole("button", { name: "like" });
+      await likeButton.click();
+      await expect(page.getByText("likes 1", { exact: false })).toBeVisible();
     });
   });
 });
