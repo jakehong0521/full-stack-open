@@ -112,7 +112,7 @@ const App = () => {
                   blog={blog}
                   onDelete={handleDeleteBlog}
                   onLikeClick={() => handleLikeClick(blog)}
-                  isUserCreated={user.id === blog.user.id}
+                  isUserCreated={user.id === blog.user}
                 />
               ))}
           </div>

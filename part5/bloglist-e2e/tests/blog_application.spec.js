@@ -1,6 +1,6 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 
-import { createBlog, loginWith } from "./helper";
+import { createBlog, loginWith, logout } from "./helper";
 
 const mockUser = {
   name: "Jake Hong",
@@ -77,6 +77,31 @@ describe("Blog app", () => {
         page.getByText(`${mockBlog.title} - ${mockBlog.author}`, {
           exact: false,
         })
+      ).not.toBeVisible();
+    });
+
+    test('only the user who added a blog sees "remove" button', async ({
+      page,
+      request,
+    }) => {
+      await createBlog(page, mockBlog);
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(page.getByRole("button", { name: "remove" })).toBeVisible();
+
+      await logout(page);
+
+      const otherUser = {
+        name: "Jay Hong",
+        username: "jay",
+        password: "password",
+      };
+      await request.post("/api/users", {
+        data: otherUser,
+      });
+      await loginWith(page, otherUser.username, otherUser.password);
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(
+        page.getByRole("button", { name: "remove" })
       ).not.toBeVisible();
     });
   });

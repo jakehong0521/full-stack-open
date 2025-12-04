@@ -11,3 +11,7 @@ export const loginWith = async (page, username, password) => {
   await page.getByRole("textbox", { name: "password" }).fill(password);
   await page.getByRole("button", { name: "login" }).click();
 };
+
+export const logout = async (page) => {
+  await page.getByRole("button", { name: "logout" }).click();
+};
