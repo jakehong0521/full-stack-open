@@ -4,6 +4,7 @@ export const createBlog = (title, author, url) => {
   cy.get('input[name="author"]').type(author)
   cy.get('input[name="url"]').type(url)
   cy.get('button[type="submit"]').click()
+  cy.contains('A new blog').should('be.visible')
 }
 
 export const loginWith = (username, password) => {

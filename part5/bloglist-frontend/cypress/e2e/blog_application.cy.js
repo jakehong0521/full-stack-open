@@ -81,5 +81,26 @@ describe('Blog application', function () {
       cy.contains('view').click()
       cy.contains('remove').should('not.exist')
     })
+
+    it.only('sorts blogs in descending order based on the number of likes', function () {
+      const otherBlog = {
+        title: 'Another blog',
+        author: 'Jay Hong',
+        url: 'http://another-blog.com',
+      }
+      createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
+      createBlog(otherBlog.title, otherBlog.author, otherBlog.url)
+
+      cy.get('[title="Blog"]').eq(0).contains('view').click()
+      cy.get('button').contains('like').click()
+      cy.get('[title="Blog"]').eq(0).contains('likes 1').should('be.exist')
+
+      cy.get('[title="Blog"]').eq(1).contains('view').click()
+      const secondLikeButton = cy.get('button[name="like"]').eq(1)
+      secondLikeButton.click()
+      cy.get('[title="Blog"]').eq(1).contains('likes 1').should('be.visible')
+      secondLikeButton.click()
+      cy.get('[title="Blog"]').eq(0).contains('likes 2').should('be.visible')
+    })
   })
 })

@@ -25,7 +25,10 @@ const Blog = ({ blog, isUserCreated, onLikeClick, onDelete }) => {
         <div>
           <div>{blog.url}</div>
           <div>
-            likes {blog.likes} <button onClick={onLikeClick}>like</button>
+            <span>likes {blog.likes}</span>{' '}
+            <button name="like" onClick={onLikeClick}>
+              like
+            </button>
           </div>
           <div>{blog.author}</div>
           {isUserCreated && <button onClick={handleDeleteClick}>remove</button>}
