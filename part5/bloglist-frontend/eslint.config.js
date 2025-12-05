@@ -1,4 +1,5 @@
 import js from '@eslint/js'
+import pluginCypress from 'eslint-plugin-cypress'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
@@ -19,6 +20,7 @@ export default [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      cypress: pluginCypress,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -45,6 +47,13 @@ export default [
       globals: {
         ...globals.vitest,
       },
+    },
+  },
+  {
+    files: ['cypress/**/*.js'],
+    extends: [pluginCypress.configs.recommended],
+    rules: {
+      'cypress/no-unnecessary-waiting': 'off',
     },
   },
 ]
