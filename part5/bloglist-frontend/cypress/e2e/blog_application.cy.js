@@ -1,9 +1,14 @@
-import { loginWith } from './helper.cy.js'
+import { createBlog, loginWith } from './helper.cy.js'
 
 const mockUser = {
   username: 'jake',
   name: 'Jake Hong',
   password: 'password',
+}
+const mockBlog = {
+  title: 'E2E Testing Guide',
+  author: 'Jake Hong',
+  url: 'http://e2e-testing-guide.com',
 }
 
 describe('Blog application', function () {
@@ -28,6 +33,21 @@ describe('Blog application', function () {
     it('fails with wrong credentials', function () {
       loginWith(mockUser.username, 'wrongpassword')
       cy.contains('Failed to login', { exact: false }).should('be.visible')
+    })
+  })
+
+  describe('When logged in', function () {
+    beforeEach(function () {
+      loginWith(mockUser.username, mockUser.password)
+    })
+
+    it('A blog can be created', function () {
+      createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
+      cy.contains('A new blog').should('be.visible')
+      cy.contains(`${mockBlog.title} - ${mockBlog.author}`).should('be.visible')
+
+      cy.visit('/')
+      cy.contains(`${mockBlog.title} - ${mockBlog.author}`).should('be.visible')
     })
   })
 })
