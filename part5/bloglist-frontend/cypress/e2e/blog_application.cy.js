@@ -49,5 +49,12 @@ describe('Blog application', function () {
       cy.visit('/')
       cy.contains(`${mockBlog.title} - ${mockBlog.author}`).should('be.visible')
     })
+
+    it('a blog can be liked', function () {
+      createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
+      cy.contains('view').click()
+      cy.contains('like').click()
+      cy.contains('likes 1').should('be.visible')
+    })
   })
 })
