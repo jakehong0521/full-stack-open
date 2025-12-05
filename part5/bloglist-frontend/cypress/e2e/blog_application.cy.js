@@ -56,5 +56,12 @@ describe('Blog application', function () {
       cy.contains('like').click()
       cy.contains('likes 1').should('be.visible')
     })
+
+    it.only('the user who added a blog can delete it', function () {
+      createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
+      cy.contains('view').click()
+      cy.contains('remove').click()
+      cy.contains(`${mockBlog.title} - ${mockBlog.author}`).should('not.exist')
+    })
   })
 })
