@@ -57,11 +57,29 @@ describe('Blog application', function () {
       cy.contains('likes 1').should('be.visible')
     })
 
-    it.only('the user who added a blog can delete it', function () {
+    it('the user who added a blog can delete it', function () {
       createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
       cy.contains('view').click()
       cy.contains('remove').click()
       cy.contains(`${mockBlog.title} - ${mockBlog.author}`).should('not.exist')
+    })
+
+    it('only the user who added a blog sees "remove" button', function () {
+      createBlog(mockBlog.title, mockBlog.author, mockBlog.url)
+      cy.contains('view').click()
+      cy.contains('remove').should('be.visible')
+
+      cy.contains('logout').click()
+
+      const otherUser = {
+        name: 'Jay Hong',
+        username: 'jay',
+        password: 'password',
+      }
+      cy.request('POST', '/api/users', otherUser)
+      loginWith(otherUser.username, otherUser.password)
+      cy.contains('view').click()
+      cy.contains('remove').should('not.exist')
     })
   })
 })
