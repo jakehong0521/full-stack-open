@@ -48,4 +48,11 @@ export const createAnecdote = (content) => {
   };
 };
 
+export const voteForAnecdote = (id) => ({
+  type: "VOTE",
+  payload: {
+    id: id,
+  },
+});
+
 export default reducer;
