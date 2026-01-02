@@ -9,9 +9,18 @@ import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import { NotificationContext } from './NotificationContext';
+import { UserContext } from './UserContext';
 
 const App = () => {
   const queryClient = useQueryClient();
+
+  const { user, userDispatch } = useContext(UserContext);
+  const setUser = (user) => {
+    userDispatch({
+      type: 'SET',
+      payload: user,
+    });
+  };
 
   const { data: blogs = [] } = useQuery({
     queryKey: ['blogs'],
@@ -43,7 +52,6 @@ const App = () => {
     },
   });
 
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
