@@ -1,13 +1,10 @@
 import { useState } from 'react';
 
-import blogService from '../services/blogs';
-
 const Blog = ({ blog, isUserCreated, onLikeClick, onDelete }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleDeleteClick = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.deleteById(blog.id);
       onDelete(blog.id);
     }
   };

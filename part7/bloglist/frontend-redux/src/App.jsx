@@ -7,7 +7,12 @@ import BlogForm from './components/BlogForm';
 import { Notice } from './components/Notice';
 import Togglable from './components/Togglable';
 import { setNotification } from './reducers/notificationReducer';
-import { createBlog, getAllBlogs, setBlogs } from './reducers/blogsReducer';
+import {
+  createBlog,
+  deleteBlogById,
+  getAllBlogs,
+  likeBlog,
+} from './reducers/blogsReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -84,19 +89,12 @@ const App = () => {
     );
   };
 
-  const handleDeleteBlog = async (blogId) => {
-    dispatch(setBlogs(blogs.filter((blog) => blog.id !== blogId)));
+  const handleDeleteBlog = (blogId) => {
+    dispatch(deleteBlogById(blogId));
   };
 
-  const handleLikeClick = async (blog) => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-    await blogService.put(updatedBlog);
-    dispatch(
-      setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))),
-    );
+  const handleLikeClick = (blog) => {
+    dispatch(likeBlog(blog));
   };
 
   return (
