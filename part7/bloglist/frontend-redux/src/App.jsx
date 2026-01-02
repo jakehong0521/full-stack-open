@@ -7,13 +7,14 @@ import BlogForm from './components/BlogForm';
 import { Notice } from './components/Notice';
 import Togglable from './components/Togglable';
 import { setNotification } from './reducers/notificationReducer';
+import { createBlog, getAllBlogs, setBlogs } from './reducers/blogsReducer';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
   const dispatch = useDispatch();
 
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
 
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
@@ -24,7 +25,7 @@ const App = () => {
   const blogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    dispatch(getAllBlogs());
   }, []);
 
   useEffect(() => {
@@ -74,8 +75,7 @@ const App = () => {
 
   const handleCreateBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    await blogService.create(blogObject);
-    await blogService.getAll().then((blogs) => setBlogs(blogs));
+    await dispatch(createBlog(blogObject));
     dispatch(
       setNotification({
         message: `A new blog "${blogObject.title}" by ${blogObject.author} added`,
@@ -85,7 +85,7 @@ const App = () => {
   };
 
   const handleDeleteBlog = async (blogId) => {
-    setBlogs(blogs.filter((blog) => blog.id !== blogId));
+    dispatch(setBlogs(blogs.filter((blog) => blog.id !== blogId)));
   };
 
   const handleLikeClick = async (blog) => {
@@ -94,7 +94,9 @@ const App = () => {
       likes: blog.likes + 1,
     };
     await blogService.put(updatedBlog);
-    setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)));
+    dispatch(
+      setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b))),
+    );
   };
 
   return (
