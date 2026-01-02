@@ -13,15 +13,15 @@ import {
   getAllBlogs,
   likeBlog,
 } from './reducers/blogsReducer';
+import { loginUser, logoutUser, setUser } from './reducers/userReducer';
 import blogService from './services/blogs';
-import loginService from './services/login';
 
 const App = () => {
   const dispatch = useDispatch();
 
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
 
-  const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -37,7 +37,7 @@ const App = () => {
     const userStr = window.localStorage.getItem('user');
     if (userStr) {
       const user = JSON.parse(userStr);
-      setUser(user);
+      dispatch(setUser(user));
       blogService.setToken(user.token);
     }
   }, []);
@@ -55,11 +55,12 @@ const App = () => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      setUser(user);
+      const user = await dispatch(
+        loginUser({
+          username,
+          password,
+        }),
+      );
       setUsername('');
       setPassword('');
       blogService.setToken(user.token);
@@ -74,8 +75,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    loginService.logout();
-    setUser(null);
+    dispatch(logoutUser(null));
   };
 
   const handleCreateBlog = async (blogObject) => {
