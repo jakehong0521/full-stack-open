@@ -12,11 +12,24 @@ import { NotificationContext } from './NotificationContext';
 
 const App = () => {
   const queryClient = useQueryClient();
-  const [_blogs, setBlogs] = useState([]);
 
   const { data: blogs = [] } = useQuery({
     queryKey: ['blogs'],
     queryFn: blogService.getAll,
+  });
+
+  const likeBlogMutation = useMutation({
+    mutationFn: blogService.put,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: blogService.deleteById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+    },
   });
 
   const newBlogMutation = useMutation({
@@ -44,10 +57,6 @@ const App = () => {
   };
 
   const blogFormRef = useRef();
-
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
 
   useEffect(() => {
     const userStr = window.localStorage.getItem('user');
@@ -97,17 +106,15 @@ const App = () => {
     newBlogMutation.mutate(blogObject);
   };
 
-  const handleDeleteBlog = async (blogId) => {
-    setBlogs(blogs.filter((blog) => blog.id !== blogId));
+  const handleDeleteBlog = (blogId) => {
+    deleteBlogMutation.mutate(blogId);
   };
 
-  const handleLikeClick = async (blog) => {
-    const updatedBlog = {
+  const handleLikeClick = (blog) => {
+    likeBlogMutation.mutate({
       ...blog,
       likes: blog.likes + 1,
-    };
-    await blogService.put(updatedBlog);
-    setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)));
+    });
   };
 
   return (
