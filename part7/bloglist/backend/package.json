@@ -1,0 +1,27 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development node --watch index.js",
+    "start": "NODE_ENV=production node index.js",
+    "start:test": "NODE_ENV=test node --watch index.js",
+    "test": "NODE_ENV=test node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.3.0+sha512.ee592eda8815a8a293c206bb0917c4bb0ff274c50def7cbc17be05ec641fc2d1b02490ce660061356bd0d126a4d7eb2ec8830e6959fb8a447571c631d5a2442d",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.14.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.4"
+  }
+}
