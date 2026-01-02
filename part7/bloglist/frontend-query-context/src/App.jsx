@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import { Notice } from './components/Notice';
@@ -9,7 +11,24 @@ import loginService from './services/login';
 import { NotificationContext } from './NotificationContext';
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const queryClient = useQueryClient();
+  const [_blogs, setBlogs] = useState([]);
+
+  const { data: blogs = [] } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: blogService.getAll,
+  });
+
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: (newBlog) => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] });
+      setNotification({
+        message: `A new blog "${newBlog.title}" by ${newBlog.author} added`,
+        type: 'success',
+      });
+    },
+  });
 
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
@@ -75,12 +94,7 @@ const App = () => {
 
   const handleCreateBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility();
-    await blogService.create(blogObject);
-    await blogService.getAll().then((blogs) => setBlogs(blogs));
-    setNotification({
-      message: `A new blog "${blogObject.title}" by ${blogObject.author} added`,
-      type: 'success',
-    });
+    newBlogMutation.mutate(blogObject);
   };
 
   const handleDeleteBlog = async (blogId) => {
