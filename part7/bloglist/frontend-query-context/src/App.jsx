@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
@@ -6,6 +6,7 @@ import { Notice } from './components/Notice';
 import Togglable from './components/Togglable';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import { NotificationContext } from './NotificationContext';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,7 +15,14 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const [notice, setNotice] = useState(null);
+  const { notification, notificationDispatch } =
+    useContext(NotificationContext);
+  const setNotification = (notification) => {
+    notificationDispatch({
+      type: 'SET',
+      payload: notification,
+    });
+  };
 
   const blogFormRef = useRef();
 
@@ -32,13 +40,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (notice) {
+    if (notification) {
       const timer = setTimeout(() => {
-        setNotice(null);
+        setNotification(null);
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [notice]);
+  }, [notification]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -53,7 +61,7 @@ const App = () => {
       setPassword('');
       blogService.setToken(user.token);
     } catch (error) {
-      setNotice({
+      setNotification({
         message: 'Failed to login: ' + error.toString(),
         type: 'error',
       });
@@ -69,7 +77,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility();
     await blogService.create(blogObject);
     await blogService.getAll().then((blogs) => setBlogs(blogs));
-    setNotice({
+    setNotification({
       message: `A new blog "${blogObject.title}" by ${blogObject.author} added`,
       type: 'success',
     });
@@ -93,7 +101,7 @@ const App = () => {
       {user && (
         <div>
           <h2>blogs</h2>
-          {notice && <Notice notice={notice} />}
+          {notification && <Notice notice={notification} />}
           <div>
             <span>{user.name} logged in</span>
             <button onClick={handleLogout}>logout</button>
@@ -122,7 +130,7 @@ const App = () => {
       {!user && (
         <div>
           <h2>log in to application</h2>
-          {notice && <Notice notice={notice} />}
+          {notification && <Notice notice={notification} />}
           <form onSubmit={handleLogin}>
             <div>
               <label>
