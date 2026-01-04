@@ -1,9 +1,9 @@
 import js from '@eslint/js';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import pluginCypress from 'eslint-plugin-cypress';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
 
 export default [
   { ignores: ['dist'] },

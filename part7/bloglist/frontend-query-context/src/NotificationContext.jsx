@@ -19,11 +19,19 @@ const NotificationContextProvider = (props) => {
     null,
   );
 
+  const setNotification = (notification) => {
+    notificationDispatch({
+      type: 'SET',
+      payload: notification,
+    });
+  };
+
   return (
     <NotificationContext.Provider
       value={{
         notification,
         notificationDispatch,
+        setNotification,
       }}
     >
       {props.children}

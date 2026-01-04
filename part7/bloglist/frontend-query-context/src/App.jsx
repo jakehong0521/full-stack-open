@@ -1,19 +1,16 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Route, Routes } from 'react-router';
 
-import Blog from './components/Blog';
-import BlogForm from './components/BlogForm';
+import Blogs from './Blogs';
 import { Notice } from './components/Notice';
-import Togglable from './components/Togglable';
+import { NotificationContext } from './NotificationContext';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import { NotificationContext } from './NotificationContext';
 import { UserContext } from './UserContext';
+import Users from './Users';
 
 const App = () => {
-  const queryClient = useQueryClient();
-
   const { user, userDispatch } = useContext(UserContext);
   const setUser = (user) => {
     userDispatch({
@@ -22,49 +19,10 @@ const App = () => {
     });
   };
 
-  const { data: blogs = [] } = useQuery({
-    queryKey: ['blogs'],
-    queryFn: blogService.getAll,
-  });
-
-  const likeBlogMutation = useMutation({
-    mutationFn: blogService.put,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-    },
-  });
-
-  const deleteBlogMutation = useMutation({
-    mutationFn: blogService.deleteById,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-    },
-  });
-
-  const newBlogMutation = useMutation({
-    mutationFn: blogService.create,
-    onSuccess: (newBlog) => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] });
-      setNotification({
-        message: `A new blog "${newBlog.title}" by ${newBlog.author} added`,
-        type: 'success',
-      });
-    },
-  });
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const { notification, notificationDispatch } =
-    useContext(NotificationContext);
-  const setNotification = (notification) => {
-    notificationDispatch({
-      type: 'SET',
-      payload: notification,
-    });
-  };
-
-  const blogFormRef = useRef();
+  const { notification, setNotification } = useContext(NotificationContext);
 
   useEffect(() => {
     const userStr = window.localStorage.getItem('user');
@@ -109,22 +67,6 @@ const App = () => {
     setUser(null);
   };
 
-  const handleCreateBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-    newBlogMutation.mutate(blogObject);
-  };
-
-  const handleDeleteBlog = (blogId) => {
-    deleteBlogMutation.mutate(blogId);
-  };
-
-  const handleLikeClick = (blog) => {
-    likeBlogMutation.mutate({
-      ...blog,
-      likes: blog.likes + 1,
-    });
-  };
-
   return (
     <div>
       {user && (
@@ -132,26 +74,8 @@ const App = () => {
           <h2>blogs</h2>
           {notification && <Notice notice={notification} />}
           <div>
-            <span>{user.name} logged in</span>
+            <div>{user.name} logged in</div>
             <button onClick={handleLogout}>logout</button>
-          </div>
-
-          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={handleCreateBlog} />
-          </Togglable>
-
-          <div style={{ marginTop: '12px' }}>
-            {blogs
-              .toSorted((blogA, blogB) => blogB.likes - blogA.likes)
-              .map((blog) => (
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  onDelete={handleDeleteBlog}
-                  onLikeClick={() => handleLikeClick(blog)}
-                  isUserCreated={user.id === blog.user}
-                />
-              ))}
           </div>
         </div>
       )}
@@ -187,6 +111,11 @@ const App = () => {
           </form>
         </div>
       )}
+
+      <Routes>
+        <Route path="users" element={<Users />} />
+        <Route index element={user ? <Blogs /> : null} />
+      </Routes>
     </div>
   );
 };
