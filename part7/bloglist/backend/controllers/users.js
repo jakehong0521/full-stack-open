@@ -13,6 +13,11 @@ usersRouter.get("/", async (request, response) => {
   return response.json(users);
 });
 
+usersRouter.get("/:id", async (request, response) => {
+  const user = await User.findById(request.params.id).populate("blogs");
+  return response.json(user);
+});
+
 usersRouter.post("/", async (request, response) => {
   const saltRounds = 8;
 

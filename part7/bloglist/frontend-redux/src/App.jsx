@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router';
 
 import Blogs from './Blogs';
+import User from './User';
 import Users from './Users';
 import { Notice } from './components/Notice';
 import { getAllBlogs } from './reducers/blogsReducer';
@@ -117,6 +118,7 @@ const App = () => {
 
       <Routes>
         <Route path="users" element={<Users />} />
+        <Route path="users/:userId" element={<User />} />
         <Route index element={user ? <Blogs /> : null} />
       </Routes>
     </div>

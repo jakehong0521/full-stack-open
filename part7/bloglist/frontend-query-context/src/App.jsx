@@ -7,6 +7,7 @@ import { Notice } from './components/Notice';
 import { NotificationContext } from './NotificationContext';
 import blogService from './services/blogs';
 import loginService from './services/login';
+import User from './User';
 import { UserContext } from './UserContext';
 import Users from './Users';
 
@@ -114,6 +115,7 @@ const App = () => {
 
       <Routes>
         <Route path="users" element={<Users />} />
+        <Route path="users/:userId" element={<User />} />
         <Route index element={user ? <Blogs /> : null} />
       </Routes>
     </div>
