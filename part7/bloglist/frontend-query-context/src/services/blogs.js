@@ -9,8 +9,13 @@ const getConfig = () => {
   };
 };
 
-const getAll = () => {
+const getAll = async () => {
   const request = axios.get(baseUrl);
+  return request.then((response) => response.data);
+};
+
+const getById = async (id) => {
+  const request = axios.get(`${baseUrl}/${id}`);
   return request.then((response) => response.data);
 };
 
@@ -38,4 +43,4 @@ const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
 
-export default { getAll, create, deleteById, put, setToken };
+export default { getAll, getById, create, deleteById, put, setToken };

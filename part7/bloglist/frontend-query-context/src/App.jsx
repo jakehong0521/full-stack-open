@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import { Route, Routes } from 'react-router';
 
+import Blog from './Blog';
 import Blogs from './Blogs';
 import { Notice } from './components/Notice';
 import { NotificationContext } from './NotificationContext';
@@ -114,6 +115,7 @@ const App = () => {
       )}
 
       <Routes>
+        <Route path="blogs/:blogId" element={<Blog />} />
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<User />} />
         <Route index element={user ? <Blogs /> : null} />

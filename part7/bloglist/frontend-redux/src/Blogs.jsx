@@ -1,18 +1,17 @@
 import { useRef } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router';
 
-import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
-import { createBlog, deleteBlogById, likeBlog } from './reducers/blogsReducer';
+import { createBlog } from './reducers/blogsReducer';
 import { setNotification } from './reducers/notificationReducer';
 
 const Blogs = () => {
   const dispatch = useDispatch();
 
   const blogs = useSelector((state) => state.blogs);
-  const user = useSelector((state) => state.user);
   const blogFormRef = useRef();
 
   const handleCreateBlog = async (blogObject) => {
@@ -26,14 +25,6 @@ const Blogs = () => {
     );
   };
 
-  const handleDeleteBlog = (blogId) => {
-    dispatch(deleteBlogById(blogId));
-  };
-
-  const handleLikeClick = (blog) => {
-    dispatch(likeBlog(blog));
-  };
-
   return (
     <>
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
@@ -44,17 +35,23 @@ const Blogs = () => {
         {blogs
           .toSorted((blogA, blogB) => blogB.likes - blogA.likes)
           .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              onDelete={handleDeleteBlog}
-              onLikeClick={() => handleLikeClick(blog)}
-              isUserCreated={user.id === blog.user}
-            />
+            <Link key={blog.id} style={linkStyle} to={`/blogs/${blog.id}`}>
+              {blog.title} - {blog.author}
+            </Link>
           ))}
       </div>
     </>
   );
+};
+
+const linkStyle = {
+  display: 'block',
+  paddingTop: 10,
+  paddingLeft: 2,
+  border: 'solid',
+  borderWidth: 1,
+  marginBottom: 5,
+  textTransform: 'capitalize',
 };
 
 export default Blogs;

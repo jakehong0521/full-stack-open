@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router';
 
+import Blog from './Blog';
 import Blogs from './Blogs';
 import User from './User';
 import Users from './Users';
@@ -117,6 +118,7 @@ const App = () => {
       )}
 
       <Routes>
+        <Route path="blogs/:blogId" element={<Blog />} />
         <Route path="users" element={<Users />} />
         <Route path="users/:userId" element={<User />} />
         <Route index element={user ? <Blogs /> : null} />
