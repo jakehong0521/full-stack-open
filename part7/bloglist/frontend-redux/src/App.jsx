@@ -7,10 +7,11 @@ import Blog from './Blog';
 import Blogs from './Blogs';
 import User from './User';
 import Users from './Users';
+import NavigationMenu from './components/NavigationMenu';
 import { Notice } from './components/Notice';
 import { getAllBlogs } from './reducers/blogsReducer';
 import { setNotification } from './reducers/notificationReducer';
-import { loginUser, logoutUser, setUser } from './reducers/userReducer';
+import { loginUser, setUser } from './reducers/userReducer';
 import blogService from './services/blogs';
 
 const App = () => {
@@ -68,27 +69,17 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logoutUser(null));
-  };
-
   return (
     <div>
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          {notification && <Notice notice={notification} />}
-          <div>
-            <div>{user.name} logged in</div>
-            <button onClick={handleLogout}>logout</button>
-          </div>
-        </div>
-      )}
+      <NavigationMenu />
+
+      {notification && <Notice notice={notification} />}
+
+      {user && <h2>blog app</h2>}
 
       {!user && (
         <div>
           <h2>log in to application</h2>
-          {notification && <Notice notice={notification} />}
           <form onSubmit={handleLogin}>
             <div>
               <label>

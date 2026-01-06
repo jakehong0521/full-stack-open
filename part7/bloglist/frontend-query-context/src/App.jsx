@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router';
 
 import Blog from './Blog';
 import Blogs from './Blogs';
+import NavigationMenu from './components/NavigationMenu';
 import { Notice } from './components/Notice';
 import { NotificationContext } from './NotificationContext';
 import blogService from './services/blogs';
@@ -64,23 +65,13 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    loginService.logout();
-    setUser(null);
-  };
-
   return (
     <div>
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          {notification && <Notice notice={notification} />}
-          <div>
-            <div>{user.name} logged in</div>
-            <button onClick={handleLogout}>logout</button>
-          </div>
-        </div>
-      )}
+      <NavigationMenu />
+
+      {notification && <Notice notice={notification} />}
+
+      {user && <h2>blogs</h2>}
 
       {!user && (
         <div>
