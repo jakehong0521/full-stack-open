@@ -51,6 +51,22 @@ blogsRouter.post("/", middleware.userExtractor, async (request, response) => {
   return response.status(201).json(blog);
 });
 
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+  if (!blog) {
+    return response.status(404).end();
+  }
+
+  const { comment } = request.body;
+  if (!comment) {
+    return response.status(400).json({ error: "Comment is required" });
+  }
+
+  blog.comments = blog.comments.concat(comment);
+  await blog.save();
+  return response.status(201).json(blog);
+});
+
 blogsRouter.put("/:id", async (request, response) => {
   try {
     const blog = await Blog.findById(request.params.id);

@@ -65,6 +65,13 @@ const Blog = () => {
       {!!blogger && !!user && blogger.id === user.id && (
         <button onClick={handleDeleteBlog}>remove</button>
       )}
+
+      <h3>comments</h3>
+      <ul>
+        {blog.comments.map((comment, index) => (
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };

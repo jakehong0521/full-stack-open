@@ -71,7 +71,7 @@ const App = () => {
 
       {notification && <Notice notice={notification} />}
 
-      {user && <h2>blogs</h2>}
+      {user && <h2>blog app</h2>}
 
       {!user && (
         <div>
