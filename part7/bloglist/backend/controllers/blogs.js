@@ -80,7 +80,8 @@ blogsRouter.put("/:id", async (request, response) => {
       !request.body.likes ||
       !request.body.title ||
       !request.body.url ||
-      !request.body.user
+      !request.body.user ||
+      !request.body.comments
     ) {
       return response
         .status(400)
@@ -92,6 +93,7 @@ blogsRouter.put("/:id", async (request, response) => {
     blog.title = request.body.title;
     blog.url = request.body.url;
     blog.user = request.body.user;
+    blog.comments = request.body.comments;
 
     const updatedBlog = await blog.save();
     return response.json(updatedBlog);

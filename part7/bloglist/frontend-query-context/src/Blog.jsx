@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 
+import { useField } from './hooks/index';
 import blogService from './services/blogs';
 import userService from './services/users';
 import { UserContext } from './UserContext';
@@ -13,6 +14,8 @@ const Blog = () => {
   const navigate = useNavigate();
 
   const { blogId } = useParams();
+  const commentField = useField('text');
+
   const {
     data: blog,
     isLoading,
@@ -26,6 +29,14 @@ const Blog = () => {
     enabled: !!blog,
     queryKey: ['author', blog?.user],
     queryFn: () => userService.getById(blog.user),
+  });
+
+  const commentBlogMutation = useMutation({
+    mutationFn: blogService.put,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blog'] });
+      commentField.reset();
+    },
   });
 
   const likeBlogMutation = useMutation({
@@ -44,6 +55,17 @@ const Blog = () => {
 
   const handleDeleteBlog = async () => {
     deleteBlogMutation.mutate(blogId);
+  };
+
+  const handleCommentSubmit = (event) => {
+    event.preventDefault();
+
+    if (blog) {
+      commentBlogMutation.mutate({
+        ...blog,
+        comments: [...blog.comments, commentField.inputProps.value],
+      });
+    }
   };
 
   const handleLikeClick = () => {
@@ -88,6 +110,15 @@ const Blog = () => {
         )}
 
         <h3>comments</h3>
+        <form onSubmit={handleCommentSubmit}>
+          <input
+            disabled={commentBlogMutation.isPending}
+            {...commentField.inputProps}
+          />
+          <button disabled={commentBlogMutation.isPending} type="submit">
+            add comment
+          </button>
+        </form>
         <ul>
           {blog.comments.map((comment, index) => (
             <li key={index}>{comment}</li>

@@ -19,6 +19,13 @@ const create = async (newBlog) => {
   return response.data;
 };
 
+const createComment = async (blogId, comment) => {
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, {
+    comment,
+  });
+  return response.data;
+};
+
 const deleteById = async (blogId) => {
   try {
     await axios.delete(`${baseUrl}/${blogId}`, getConfig());
@@ -38,4 +45,4 @@ const setToken = (newToken) => {
   token = `Bearer ${newToken}`;
 };
 
-export default { getAll, create, deleteById, put, setToken };
+export default { getAll, create, createComment, deleteById, put, setToken };

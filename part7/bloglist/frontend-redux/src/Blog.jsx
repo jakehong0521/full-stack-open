@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 
-import { deleteBlogById, likeBlog } from './reducers/blogsReducer';
+import { useField } from './hooks';
+import { commentBlog, deleteBlogById, likeBlog } from './reducers/blogsReducer';
 import userService from './services/users';
 
 const Blog = () => {
@@ -11,6 +12,7 @@ const Blog = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const commentField = useField('text');
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
   const blog = blogs?.find((blog) => blog.id === blogId);
@@ -22,6 +24,12 @@ const Blog = () => {
       userService.getById(blog.user).then(setBlogger);
     }
   }, [blog]);
+
+  const handleCommentSubmit = async (event) => {
+    event.preventDefault();
+    await dispatch(commentBlog(blogId, commentField.inputProps.value));
+    commentField.reset();
+  };
 
   const handleDeleteBlog = async () => {
     if (
@@ -67,6 +75,10 @@ const Blog = () => {
       )}
 
       <h3>comments</h3>
+      <form onSubmit={handleCommentSubmit}>
+        <input {...commentField.inputProps} />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {blog.comments.map((comment, index) => (
           <li key={index}>{comment}</li>

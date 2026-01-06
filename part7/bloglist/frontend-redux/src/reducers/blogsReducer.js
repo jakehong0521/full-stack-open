@@ -49,6 +49,17 @@ export const getAllBlogs = () => {
   };
 };
 
+export const commentBlog = (blogId, comment) => {
+  return async (dispatch, getState) => {
+    const updatedBlog = await blogService.createComment(blogId, comment);
+    const { blogs } = getState();
+    const newBlogs = blogs.map((blog) =>
+      blog.id === updatedBlog.id ? updatedBlog : blog,
+    );
+    dispatch(setBlogs(newBlogs));
+  };
+};
+
 export const likeBlog = (blog) => {
   return async (dispatch) => {
     const blogToUpdate = {
