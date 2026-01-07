@@ -1,8 +1,10 @@
 import { useContext } from 'react';
 
+import Button from '@mui/material/Button';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router';
 
+import TextField from '@mui/material/TextField';
 import { useField } from './hooks/index';
 import blogService from './services/blogs';
 import userService from './services/users';
@@ -92,32 +94,43 @@ const Blog = () => {
         </div>
         <div>
           <span>{blog.likes} likes</span>
-          <button
+          <Button
             disabled={likeBlogMutation.isPending}
             onClick={handleLikeClick}
+            size="small"
+            variant="contained"
           >
             like
-          </button>
+          </Button>
         </div>
         {blogger && <div>added by {blogger.name}</div>}
         {!!blogger && !!user && blogger.id === user.id && (
-          <button
+          <Button
             disabled={deleteBlogMutation.isPending}
             onClick={handleDeleteBlog}
+            size="small"
+            variant="contained"
           >
             remove
-          </button>
+          </Button>
         )}
 
         <h3>comments</h3>
         <form onSubmit={handleCommentSubmit}>
-          <input
+          <TextField
             disabled={commentBlogMutation.isPending}
+            id="comment"
+            label="Comment"
             {...commentField.inputProps}
           />
-          <button disabled={commentBlogMutation.isPending} type="submit">
+          <Button
+            disabled={commentBlogMutation.isPending}
+            size="small"
+            type="submit"
+            variant="contained"
+          >
             add comment
-          </button>
+          </Button>
         </form>
         <ul>
           {blog.comments.map((comment, index) => (

@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 
+import Button from '@mui/material/Button';
 import { Link } from 'react-router';
 
 import { UserContext } from '../UserContext';
@@ -23,7 +24,9 @@ const NavigationMenu = () => {
       {user && (
         <div>
           <span style={{ marginRight: '0.25rem' }}>{user.name} logged in</span>
-          <button onClick={handleLogout}>logout</button>
+          <Button variant="contained" size="small" onClick={handleLogout}>
+            logout
+          </Button>
         </div>
       )}
     </div>

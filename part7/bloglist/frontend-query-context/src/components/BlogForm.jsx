@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import Button from '@mui/material/Button';
+
 const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -47,7 +49,9 @@ const BlogForm = ({ createBlog }) => {
             />
           </label>
         </div>
-        <button type="submit">create</button>
+        <Button variant="contained" size="small" type="submit">
+          create
+        </Button>
       </form>
     </div>
   );

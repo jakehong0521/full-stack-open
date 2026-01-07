@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import { Route, Routes } from 'react-router';
 
 import Blog from './Blog';
@@ -66,7 +69,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div style={{ fontFamily: 'roboto' }}>
       <NavigationMenu />
 
       {notification && <Notice notice={notification} />}
@@ -74,33 +77,39 @@ const App = () => {
       {user && <h2>blog app</h2>}
 
       {!user && (
-        <div>
-          <h2>log in to application</h2>
-          {notification && <Notice notice={notification} />}
+        <div style={{ marginBottom: '3rem' }}>
+          <Typography variant="h4">log in to application</Typography>
           <form onSubmit={handleLogin}>
             <div>
-              <label>
-                username
-                <input
-                  type="text"
-                  value={username}
-                  name="Username"
-                  onChange={({ target }) => setUsername(target.value)}
-                />
-              </label>
+              <TextField
+                id="username"
+                label="Username"
+                variant="standard"
+                type="text"
+                value={username}
+                name="Username"
+                onChange={({ target }) => setUsername(target.value)}
+              />
             </div>
             <div>
-              <label>
-                password
-                <input
-                  type="password"
-                  value={password}
-                  name="Password"
-                  onChange={({ target }) => setPassword(target.value)}
-                />
-              </label>
+              <TextField
+                id="password"
+                label="Password"
+                variant="standard"
+                type="password"
+                value={password}
+                name="Password"
+                onChange={({ target }) => setPassword(target.value)}
+              />
             </div>
-            <button type="submit">login</button>
+            <Button
+              type="submit"
+              variant="contained"
+              size="small"
+              style={{ marginTop: '1rem' }}
+            >
+              login
+            </Button>
           </form>
         </div>
       )}
