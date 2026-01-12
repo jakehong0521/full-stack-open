@@ -97,8 +97,17 @@ let books = [
   you can remove the placeholder query once your first one has been implemented 
 */
 
-const typeDefs = `
+const typeDefs = /* GraphQL */ `
+  type Book {
+    author: String!
+    genres: [String!]!
+    id: ID!
+    published: Int!
+    title: String!
+  }
+
   type Query {
+    allBooks: [Book!]!
     authorCount: Int!
     bookCount: Int!
     dummy: Int
@@ -107,6 +116,7 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
+    allBooks: () => books,
     authorCount: () => authors.length,
     bookCount: () => books.length,
     dummy: () => 0,
