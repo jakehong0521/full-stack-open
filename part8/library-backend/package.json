@@ -1,0 +1,19 @@
+{
+  "name": "library-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "library-backend.js",
+  "scripts": {
+    "dev": "open http://localhost:4000 &&node --watch library-backend.js",
+    "start": "node library-backend.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.15.1",
+  "dependencies": {
+    "@apollo/server": "^5.2.0",
+    "graphql": "^16.12.0"
+  }
+}
