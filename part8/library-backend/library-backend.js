@@ -122,6 +122,7 @@ const typeDefs = /* GraphQL */ `
       published: Int!
       title: String!
     ): Book
+    editAuthor(name: String!, setBornTo: Int!): Author
   }
 
   type Query {
@@ -143,6 +144,14 @@ const resolvers = {
         authors = [...authors, author];
       }
       return book;
+    },
+    editAuthor: (_root, args) => {
+      const author = authors.find((a) => a.name === args.name);
+      if (!author) {
+        return null;
+      }
+      author.born = args.setBornTo;
+      return author;
     },
   },
   Query: {
