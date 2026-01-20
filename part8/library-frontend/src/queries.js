@@ -1,1 +1,12 @@
-import { ApolloClient, gql, HttpLink, InMemoryCache } from '@apollo/client';
+import { gql } from '@apollo/client';
+
+export const ALL_AUTHORS = gql`
+  query {
+    allAuthors {
+      bookCount
+      born
+      id
+      name
+    }
+  }
+`;
