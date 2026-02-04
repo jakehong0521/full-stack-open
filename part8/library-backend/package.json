@@ -4,7 +4,7 @@
   "description": "",
   "main": "library-backend.js",
   "scripts": {
-    "dev": "open http://localhost:4000 &&node --watch library-backend.js",
+    "dev": "node --watch library-backend.js",
     "start": "node library-backend.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
