@@ -1,6 +1,6 @@
 const typeDefs = /* GraphQL */ `
   type Author {
-    bookCount: Int!
+    bookCount: Int
     born: Int
     id: ID!
     name: String!
