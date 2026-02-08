@@ -119,6 +119,13 @@ const resolvers = {
 
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
+    resetDb: async (root, args) => {
+      await Author.deleteMany({});
+      await Book.deleteMany({});
+      await User.deleteMany({});
+
+      return true;
+    },
   },
   Query: {
     allAuthors: async () => await Author.find(),

@@ -34,6 +34,7 @@ const typeDefs = /* GraphQL */ `
     createUser(username: String!, favoriteGenre: String!): User
     editAuthor(name: String!, setBornTo: Int!): Author
     login(username: String!, password: String!): Token
+    resetDb: Boolean
   }
 
   type Query {
