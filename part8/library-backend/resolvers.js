@@ -2,6 +2,7 @@ const crypto = require("crypto");
 
 const Author = require("./models/author");
 const Book = require("./models/book");
+const { GraphQLError } = require("graphql");
 
 const resolvers = {
   Mutation: {
@@ -11,17 +12,42 @@ const resolvers = {
         published: args.published,
         genres: args.genres,
       });
+      let wasAuthorCreated = false;
 
       if (args.author) {
         let author = await Author.findOne({ name: args.author });
         if (!author) {
           author = new Author({ name: args.author });
-          await author.save();
+          try {
+            await author.save();
+            wasAuthorCreated = true;
+          } catch (error) {
+            throw new GraphQLError(`Failed to save author: ${error.message}`, {
+              extensions: {
+                error,
+                args,
+              },
+            });
+          }
         }
         book.author = author._id;
       }
 
-      return await book.save();
+      try {
+        await book.save();
+      } catch (error) {
+        if (wasAuthorCreated) {
+          const result = await Author.deleteOne({ name: args.author });
+        }
+        throw new GraphQLError(`Failed to save book: ${error.message}`, {
+          extensions: {
+            error,
+            args,
+          },
+        });
+      }
+
+      return book;
     },
     editAuthor: async (_root, args) => {
       const author = await Author.findOne({ _id: args.id });
@@ -29,7 +55,19 @@ const resolvers = {
         return null;
       }
       author.born = args.setBornTo;
-      return await author.save();
+
+      try {
+        await author.save();
+      } catch (error) {
+        throw new GraphQLError(`Failed to update author: ${error.message}`, {
+          extensions: {
+            error,
+            args,
+          },
+        });
+      }
+
+      return author;
     },
   },
   Query: {
