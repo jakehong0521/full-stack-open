@@ -50,6 +50,14 @@ export const ALL_BOOKS = gql`
   }
 `;
 
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`;
+
 export const SET_BIRTHYEAR = gql`
   mutation SetBirthyear($name: String!, $born: Int!) {
     editAuthor(name: $name, setBornTo: $born) {

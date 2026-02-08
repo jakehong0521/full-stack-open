@@ -61,7 +61,7 @@ const resolvers = {
         });
       }
 
-      return book;
+      return book.populate("author");
     },
     createUser: async (root, args) => {
       const user = new User(args);
