@@ -1,12 +1,26 @@
 const crypto = require("crypto");
+const { GraphQLError } = require("graphql");
+const jwt = require("jsonwebtoken");
 
 const Author = require("./models/author");
 const Book = require("./models/book");
-const { GraphQLError } = require("graphql");
+const User = require("./models/user");
+
+const masterPassword = "secret";
 
 const resolvers = {
   Mutation: {
-    addBook: async (_root, args) => {
+    addBook: async (_root, args, context) => {
+      const currentUser = context.currentUser;
+
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+          },
+        });
+      }
+
       const book = new Book({
         title: args.title,
         published: args.published,
@@ -49,7 +63,29 @@ const resolvers = {
 
       return book;
     },
-    editAuthor: async (_root, args) => {
+    createUser: async (root, args) => {
+      const user = new User(args);
+
+      return user.save().catch((error) => {
+        throw new GraphQLError(`Creating the user failed: ${error.message}`, {
+          extensions: {
+            args: args.username,
+            error,
+          },
+        });
+      });
+    },
+    editAuthor: async (_root, args, context) => {
+      const currentUser = context.currentUser;
+
+      if (!currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "UNAUTHENTICATED",
+          },
+        });
+      }
+
       const author = await Author.findOne({ _id: args.id });
       if (!author) {
         return null;
@@ -69,6 +105,20 @@ const resolvers = {
 
       return author;
     },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      if (!user || args.password !== masterPassword) {
+        throw new GraphQLError("wrong credentials");
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+    },
   },
   Query: {
     allAuthors: async () => await Author.find(),
@@ -79,6 +129,7 @@ const resolvers = {
     authorCount: async () => await Author.collection.countDocuments(),
     bookCount: async () => await Book.collection.countDocuments(),
     dummy: () => 0,
+    me: async (_root, _args, context) => context.currentUser,
   },
 };
 
