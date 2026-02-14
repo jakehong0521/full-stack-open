@@ -24,6 +24,10 @@ const typeDefs = /* GraphQL */ `
     id: ID!
   }
 
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type Mutation {
     addBook(
       author: String!

@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const { PubSub } = require("graphql-subscriptions");
 const { GraphQLError } = require("graphql");
 const jwt = require("jsonwebtoken");
 
@@ -7,6 +8,8 @@ const Book = require("./models/book");
 const User = require("./models/user");
 
 const masterPassword = "secret";
+
+const pubsub = new PubSub();
 
 const resolvers = {
   Mutation: {
@@ -61,7 +64,10 @@ const resolvers = {
         });
       }
 
-      return book.populate("author");
+      const populatedBook = await book.populate("author");
+      pubsub.publish("BOOK_ADDED", { bookAdded: populatedBook });
+
+      return populatedBook;
     },
     createUser: async (root, args) => {
       const user = new User(args);
@@ -137,6 +143,11 @@ const resolvers = {
     bookCount: async () => await Book.collection.countDocuments(),
     dummy: () => 0,
     me: async (_root, _args, context) => context.currentUser,
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator("BOOK_ADDED"),
+    },
   },
 };
 
