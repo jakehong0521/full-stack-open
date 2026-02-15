@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useApolloClient } from '@apollo/client/react';
+import { useApolloClient, useSubscription } from '@apollo/client/react';
 
 import Authors from './components/Authors';
 import Books from './components/Books';
@@ -8,6 +8,7 @@ import Login from './components/Login';
 import NewBook from './components/NewBook';
 import RecommendedBooks from './components/RecommendedBooks';
 import { localStorageKeyDict } from './const';
+import { BOOK_ADDED } from './queries';
 
 const defaultPage = 'authors';
 
@@ -17,6 +18,13 @@ const App = () => {
     localStorage.getItem(localStorageKeyDict.token),
   );
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const book = data.data.bookAdded;
+      window.alert(`${book.title} by ${book.author.name} was added`);
+    },
+  });
 
   const handleLogin = (newToken) => {
     setToken(newToken);
