@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { useApolloClient, useSubscription } from '@apollo/client/react';
 
+import { addBookToCache } from './cacheUtils';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import Login from './components/Login';
@@ -21,8 +22,7 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      const book = data.data.bookAdded;
-      window.alert(`${book.title} by ${book.author.name} was added`);
+      addBookToCache(client.cache, data.data.bookAdded);
     },
   });
 
