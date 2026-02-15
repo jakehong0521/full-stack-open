@@ -17,7 +17,6 @@ const NewBook = (props) => {
       const updatedBook = response.data.addBook;
 
       cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        console.log('[ALL_BOOKS]', { allBooks });
         const isBookInCache = allBooks.some(
           (book) => book.id === updatedBook.id,
         );
@@ -33,7 +32,6 @@ const NewBook = (props) => {
             const isBookInCache = allBooks.some(
               (book) => book.id === updatedBook.id,
             );
-            console.log(`[ALL_BOOKS + ${genre}]`, { allBooks, isBookInCache });
             return isBookInCache
               ? { allBooks }
               : { allBooks: [...allBooks, updatedBook] };
