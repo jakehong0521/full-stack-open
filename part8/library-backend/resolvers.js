@@ -12,6 +12,15 @@ const masterPassword = "secret";
 const pubsub = new PubSub();
 
 const resolvers = {
+  Author: {
+    bookCount: async (root) => {
+      if (typeof root.bookCount !== "number") {
+        return await Book.countDocuments({ author: root._id });
+      }
+
+      return root.bookCount;
+    },
+  },
   Mutation: {
     addBook: async (_root, args, context) => {
       const currentUser = context.currentUser;
@@ -134,13 +143,30 @@ const resolvers = {
     },
   },
   Query: {
-    allAuthors: async () => await Author.find(),
+    allAuthors: async () =>
+      await Author.aggregate([
+        {
+          $lookup: {
+            from: "books",
+            localField: "_id",
+            foreignField: "author",
+            as: "bookCount",
+          },
+        },
+        {
+          $project: {
+            id: { $toString: "$_id" },
+            name: 1,
+            born: 1,
+            bookCount: { $size: "$bookCount" },
+          },
+        },
+      ]),
     allBooks: async (_root, args) =>
       await Book.find({
         ...(args.genre && { genres: args.genre }),
       }).populate("author"),
     authorCount: async () => await Author.collection.countDocuments(),
-    bookCount: async () => await Book.collection.countDocuments(),
     dummy: () => 0,
     me: async (_root, _args, context) => context.currentUser,
   },

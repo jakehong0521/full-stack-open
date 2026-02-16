@@ -45,7 +45,6 @@ const typeDefs = /* GraphQL */ `
     allAuthors: [Author!]!
     allBooks(author: String, genre: String): [Book!]!
     authorCount: Int!
-    bookCount: Int!
     dummy: Int
     me: User
   }
