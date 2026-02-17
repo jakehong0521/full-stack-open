@@ -1,6 +1,6 @@
 import { getIsNumber } from "./utils";
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   const heightInMeters = height / 100;
   const bmi = weight / (heightInMeters * heightInMeters);
   if (bmi < 18.5) {
@@ -33,13 +33,15 @@ const parseArguments = (args: string[]): BmiInput => {
   }
 };
 
-try {
-  const { weight, height } = parseArguments(process.argv);
-  console.log(calculateBmi(weight, height));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (require.main === module) {
+  try {
+    const { weight, height } = parseArguments(process.argv);
+    console.log(calculateBmi(weight, height));
+  } catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
