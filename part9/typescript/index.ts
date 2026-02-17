@@ -17,8 +17,6 @@ app.get("/bmi", (req, res) => {
   const isInputInvalid =
     !height || !weight || !getIsNumber(height) || !getIsNumber(weight);
 
-  console.log({ isInputInvalid });
-
   if (isInputInvalid) {
     return res.status(400).json({ error: "malformatted parameters" });
   }

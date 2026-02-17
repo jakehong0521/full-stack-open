@@ -1,3 +1,3 @@
-export const getIsNumber = (value: any): value is number => {
+export const getIsNumber = (value: unknown): value is number => {
   return typeof value === "number" && !isNaN(value);
 };
