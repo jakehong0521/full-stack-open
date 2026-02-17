@@ -15,7 +15,7 @@ interface ExerciseAnalysis {
   trainingDays: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   hours: number[],
   targetHour: number,
 ): ExerciseAnalysis => {
@@ -61,13 +61,15 @@ const parseArguments = (args: string[]): ExerciseInput => {
   }
 };
 
-try {
-  const { hours, target } = parseArguments(process.argv);
-  console.log(calculateExercises(hours, target));
-} catch (error: unknown) {
-  let errorMessage = "Something bad happened.";
-  if (error instanceof Error) {
-    errorMessage += " Error: " + error.message;
+if (require.main === module) {
+  try {
+    const { hours, target } = parseArguments(process.argv);
+    console.log(calculateExercises(hours, target));
+  } catch (error: unknown) {
+    let errorMessage = "Something bad happened.";
+    if (error instanceof Error) {
+      errorMessage += " Error: " + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
