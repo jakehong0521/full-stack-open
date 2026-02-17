@@ -1,3 +1,10 @@
+import { getIsNumber } from "./utils";
+
+interface ExerciseInput {
+  hours: number[];
+  target: number;
+}
+
 interface ExerciseAnalysis {
   average: number;
   periodLength: number;
@@ -39,4 +46,28 @@ const getRatingDescription = (rating: number): string => {
   }
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const parseArguments = (args: string[]): ExerciseInput => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const inputs = args.slice(2).map(Number);
+
+  if (inputs.every(getIsNumber)) {
+    return {
+      hours: inputs.slice(1),
+      target: inputs[0],
+    };
+  } else {
+    throw new Error("Provided values were not numbers!");
+  }
+};
+
+try {
+  const { hours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
