@@ -17,4 +17,9 @@ router.get("/", (_req, res: Response<NonSensitivePatient[]>) => {
   );
 });
 
+router.post("/", (req, res) => {
+  const newPatient = patientsService.createPatient(req.body);
+  res.json(newPatient);
+});
+
 export default router;
