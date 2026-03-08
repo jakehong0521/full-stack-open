@@ -2,9 +2,10 @@ import { v1 as uuid } from "uuid";
 
 import patientsData from "../data/patients";
 import { NewPatient, Patient } from "../types/patients";
+import { toPatient } from "../utils/patients";
 
-const getPatients = () => {
-  return patientsData;
+const getPatients = (): Patient[] => {
+  return patientsData.map(toPatient);
 };
 
 const createPatient = (newPatient: NewPatient): Patient => {

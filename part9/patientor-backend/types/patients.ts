@@ -1,6 +1,12 @@
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Other = "other",
+}
+
 export type Patient = {
   dateOfBirth: string;
-  gender: string;
+  gender: Gender;
   id: string;
   name: string;
   occupation: string;

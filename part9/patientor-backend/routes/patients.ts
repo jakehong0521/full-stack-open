@@ -2,6 +2,7 @@ import express, { Response } from "express";
 
 import patientsService from "../services/patients";
 import { NonSensitivePatient } from "../types/patients";
+import { toNewPatient } from "../utils/patients";
 
 const router = express.Router();
 
@@ -18,8 +19,8 @@ router.get("/", (_req, res: Response<NonSensitivePatient[]>) => {
 });
 
 router.post("/", (req, res) => {
-  const newPatient = patientsService.createPatient(req.body);
-  res.json(newPatient);
+  const createdPatient = patientsService.createPatient(toNewPatient(req.body));
+  res.json(createdPatient);
 });
 
 export default router;
