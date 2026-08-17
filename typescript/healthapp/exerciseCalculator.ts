@@ -1,6 +1,4 @@
-const getIsNumber = (value: unknown): value is number => {
-  return typeof value === "number" && !isNaN(value);
-};
+import { isNotNumber } from "./utils.ts";
 
 interface ExerciseInput {
   hours: number[];
@@ -48,4 +46,28 @@ const getRatingDescription = (rating: number): string => {
   }
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const parseArguments = (args: string[]): ExerciseInput => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+
+  const inputs = args.slice(2).map(Number);
+
+  if (inputs.some(isNotNumber)) {
+    throw new Error("Provided values were not numbers!");
+  } else {
+    return {
+      hours: inputs.slice(1),
+      target: inputs[0],
+    };
+  }
+};
+
+try {
+  const { hours, target } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}

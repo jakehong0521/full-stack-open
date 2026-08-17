@@ -1,6 +1,4 @@
-const getIsNumber = (value: unknown): value is number => {
-  return typeof value === "number" && !isNaN(value);
-};
+import { isNotNumber } from "./utils.ts";
 
 export const calculateBmi = (height: number, weight: number): string => {
   const heightInMeters = height / 100;
@@ -29,4 +27,27 @@ interface BmiInput {
   height: number;
 }
 
-console.log(calculateBmi(180, 74));
+const parseArguments = (args: string[]): BmiInput => {
+  if (args.length < 4) throw new Error("Not enough arguments");
+  if (args.length > 4) throw new Error("Too many arguments");
+
+  if (isNotNumber(Number(args[2])) || isNotNumber(Number(args[3]))) {
+    throw new Error("Provided values were not numbers!");
+  } else {
+    return {
+      weight: Number(args[2]),
+      height: Number(args[3]),
+    };
+  }
+};
+
+try {
+  const { weight, height } = parseArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = "Something bad happened.";
+  if (error instanceof Error) {
+    errorMessage += " Error: " + error.message;
+  }
+  console.log(errorMessage);
+}
