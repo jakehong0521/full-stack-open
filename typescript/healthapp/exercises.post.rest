@@ -1,5 +1,5 @@
 ### Happy path
-POST http://localhost:3003/exercises HTTP/1.1
+POST http://localhost:3000/exercises HTTP/1.1
 content-type: application/json
 
 {
@@ -8,7 +8,7 @@ content-type: application/json
 }
 
 ### Missing parameters
-POST http://localhost:3003/exercises HTTP/1.1
+POST http://localhost:3000/exercises HTTP/1.1
 content-type: application/json
 
 {
@@ -16,7 +16,7 @@ content-type: application/json
 }
 
 ### Malformatted parameters
-POST http://localhost:3003/exercises HTTP/1.1
+POST http://localhost:3000/exercises HTTP/1.1
 content-type: application/json
 
 {
